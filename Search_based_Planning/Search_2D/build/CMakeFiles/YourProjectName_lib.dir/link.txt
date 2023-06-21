@@ -1,0 +1,2 @@
+/usr/bin/ar qc libYourProjectName_lib.a  CMakeFiles/YourProjectName_lib.dir/src/Env.cpp.o CMakeFiles/YourProjectName_lib.dir/src/Plotting.cpp.o
+/usr/bin/ranlib libYourProjectName_lib.a
