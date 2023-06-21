@@ -1,4 +1,4 @@
-#include "BFS.h"
+#include "DFS.h"
 #include "Plotting.h"
 #include "Env.h"
 #include <iostream>
@@ -13,12 +13,12 @@
 #include <math.h>
 
 
-BFS::PointSetPair BFS::searching()
+DFS::PointSetPair DFS::searching()
 {
-    BFS::PointSetPair pathVisitedPair;
+    DFS::PointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
-    _g[_xG] = BFS::INF;
+    _g[_xG] = DFS::INF;
     
     std::cout << "Starting at:" << std::endl;
     std::cout << "xI: " << _xI.first << ", " << _xI.second << std::endl;
@@ -29,16 +29,16 @@ BFS::PointSetPair BFS::searching()
 
     while(!_open.empty())
     {
-        _xC = _open.front();
+        _xC = _open.top();
         _open.pop();
         _closed.insert(_xC);
         
         
-        if (count % 25 == 0)
+        if (count % 100 == 0)
         {
             // Plot visited points and path.
             this->displayPlots();
-            cv::waitKey(25); // Pause for a short time
+            cv::waitKey(5); // Pause for a short time
         }
 
         count++;
@@ -48,26 +48,25 @@ BFS::PointSetPair BFS::searching()
             break;
         }
 
-        BFS::PointVector neighbours = this->getNeighbours(_xC);
+        DFS::PointVector neighbours = this->getNeighbours(_xC);
 
         for(auto s_next : neighbours)
         {
-            // This code represents a variation of the traditional BFS algorithm. 
-            // In a standard BFS, the algorithm visits all neighbors at the current depth 
-            // before proceeding to nodes at the next depth level, without considering any cost associated with the nodes or edges.
-            // However, in this variation, we are using a cost function to potentially change the parent node 
-            // if a lower cost path is found to the node. This allows for a form of path optimization.
-            // In the context of an unweighted graph, BFS does find the shortest path in terms of the number of edges. 
-            // However, for weighted graphs, this variant may not guarantee the globally optimal shortest path.
-            
+            // This is a variation of the standard DFS algorithm, where we are introducing a cost factor 
+            // to influence the selection of parent nodes for each node in the graph. In a traditional DFS, 
+            // a node's parent is always the node from which it was visited and does not change, and costs are not considered.
+            // However, in this variation, we use cost as a factor to potentially update a node's parent 
+            // if a lower cost path is found to the node. This allows for a form of path optimization, 
+            // but note that this does not guarantee finding the shortest path in all types of graphs.
+
             double new_cost = _g[_xC] + this->cost(_xC, s_next);
 
-            auto result = _g.insert({s_next, BFS::INF});
+            auto result = _g.insert({s_next, DFS::INF});
 
 
             // If the new cost is less than the current cost for the node in the graph,
             // update the node's cost in the graph, set its parent to the current node,
-            // and push the node onto the queue for further processing.
+            // and push the node onto the stack for further processing.
             if(new_cost < _g[s_next])
             {
                 _g[s_next] = new_cost;

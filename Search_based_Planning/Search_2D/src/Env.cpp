@@ -33,7 +33,7 @@ std::set<std::pair<int, int>> Env::obs_map() {
     std::set<std::pair<int, int>> obs;
     int total_cells = x_range * y_range;
 
-    int num_walls = 5;
+    int num_walls = 4;
     int min_wall_length = 5;
     int max_wall_length = 20;
     std::random_device rd;
@@ -56,18 +56,34 @@ std::set<std::pair<int, int>> Env::obs_map() {
         if (starts_horizontal) {
             // Expand walls form random start to random goal
             for(int i = wI.first; i < wG.first; i++){
+                if ((this->xG == std::make_pair(i, wI.second)) || (this->xI == std::make_pair(i, wI.second)))
+                {
+                    break;
+                }
                 obs.insert({i, wI.second});
             }
             for(int i = wI.second; i < wG.second; i++){
+                if ((this->xG == std::make_pair(wG.first, i)) || (this->xI == std::make_pair(wG.first, i)))
+                {
+                    break;
+                }
                 obs.insert({wG.first, i});
             }
         }
         else {
             // Expand walls form random start to random goal
             for(int i = wI.second; i < wG.second; i++){
+                if ((this->xG == std::make_pair(i, wI.second)) || (this->xI == std::make_pair(i, wI.second)))
+                {
+                    break;
+                }
                 obs.insert({wI.first, i});
             }
             for(int i = wI.first; i < wG.first; i++){
+                if ((this->xG == std::make_pair(wG.first, i)) || (this->xI == std::make_pair(wG.first, i)))
+                {
+                    break;
+                }
                 obs.insert({i, wG.second});
             }
         }

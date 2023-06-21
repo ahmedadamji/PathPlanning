@@ -1,5 +1,5 @@
-#ifndef BFS_H
-#define BFS_H
+#ifndef Dijkstra_H
+#define Dijkstra_H
 
 #include "Plotting.h"
 #include "Env.h"
@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <math.h>
 
-class BFS: public AStar
+class Dijkstra: public AStar
 {
     public:
         /**
@@ -28,12 +28,12 @@ class BFS: public AStar
          * @param xG 
          * @param heuristic_type 
          */
-        BFS(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
+        Dijkstra(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
 
         /**
-         * @brief Run the BFS algorithm
+         * @brief Run the Dijkstra algorithm
          * 
-         * This function runs the BFS algorithm and returns the path and visited nodes.
+         * This function runs the Dijkstra algorithm and returns the path and visited nodes.
          * 
          * @return pathVisitedPair: The path and visited nodes.
          */
@@ -42,8 +42,8 @@ class BFS: public AStar
 
 
     private:
-        std::queue<Point> _open;
+        std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > _open; // priority queue of open nodes
 
 };
 
-#endif  // BFS_H
+#endif  // Dijkstra_H

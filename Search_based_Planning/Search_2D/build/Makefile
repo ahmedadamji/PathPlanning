@@ -177,6 +177,60 @@ src/BFS.cpp.s:
 	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BFS.cpp.s
 .PHONY : src/BFS.cpp.s
 
+src/DFS.o: src/DFS.cpp.o
+
+.PHONY : src/DFS.o
+
+# target to build an object file
+src/DFS.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/DFS.cpp.o
+.PHONY : src/DFS.cpp.o
+
+src/DFS.i: src/DFS.cpp.i
+
+.PHONY : src/DFS.i
+
+# target to preprocess a source file
+src/DFS.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/DFS.cpp.i
+.PHONY : src/DFS.cpp.i
+
+src/DFS.s: src/DFS.cpp.s
+
+.PHONY : src/DFS.s
+
+# target to generate assembly for a file
+src/DFS.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/DFS.cpp.s
+.PHONY : src/DFS.cpp.s
+
+src/Dijkstra.o: src/Dijkstra.cpp.o
+
+.PHONY : src/Dijkstra.o
+
+# target to build an object file
+src/Dijkstra.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.o
+.PHONY : src/Dijkstra.cpp.o
+
+src/Dijkstra.i: src/Dijkstra.cpp.i
+
+.PHONY : src/Dijkstra.i
+
+# target to preprocess a source file
+src/Dijkstra.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.i
+.PHONY : src/Dijkstra.cpp.i
+
+src/Dijkstra.s: src/Dijkstra.cpp.s
+
+.PHONY : src/Dijkstra.s
+
+# target to generate assembly for a file
+src/Dijkstra.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.s
+.PHONY : src/Dijkstra.cpp.s
+
 src/Dummy.o: src/Dummy.cpp.o
 
 .PHONY : src/Dummy.o
@@ -300,6 +354,12 @@ help:
 	@echo "... src/BFS.o"
 	@echo "... src/BFS.i"
 	@echo "... src/BFS.s"
+	@echo "... src/DFS.o"
+	@echo "... src/DFS.i"
+	@echo "... src/DFS.s"
+	@echo "... src/Dijkstra.o"
+	@echo "... src/Dijkstra.i"
+	@echo "... src/Dijkstra.s"
 	@echo "... src/Dummy.o"
 	@echo "... src/Dummy.i"
 	@echo "... src/Dummy.s"

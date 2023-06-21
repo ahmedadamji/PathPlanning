@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <algorithm>
+#include <stack>
 #include <math.h>
 
 AStar::AStar(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type)
@@ -25,12 +26,12 @@ AStar::PointSetPair AStar::searching()
     AStar::PointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
-    _g[_xG] = std::numeric_limits<double>::infinity();
+    _g[_xG] = AStar::INF;
     
     std::cout << "Starting at:" << std::endl;
     std::cout << "xI: " << _xI.first << ", " << _xI.second << std::endl;
 
-    _open.push(std::make_pair(this->fValue(_xI), _xI));
+    _open.emplace(this->fValue(_xI), _xI);
 
     int count = 0;
 
@@ -46,7 +47,7 @@ AStar::PointSetPair AStar::searching()
         {
             // Plot visited points and path.
             this->displayPlots();
-            cv::waitKey(10); // Pause for a short time
+            cv::waitKey(25); // Pause for a short time
         }
 
         count++;
@@ -62,16 +63,13 @@ AStar::PointSetPair AStar::searching()
         {
             double new_cost = _g[s] + this->cost(s, s_next);
 
-            if(_closed.find(s_next) == _closed.end())
-            {
-                _g[s_next] = std::numeric_limits<double>::infinity();
-            }
+            auto result = _g.insert({s_next, AStar::INF});
 
             if(new_cost < _g[s_next])
             {
                 _g[s_next] = new_cost;
                 _parent[s_next] = s;
-                _open.push(std::make_pair(this->fValue(s_next), s_next));
+                _open.emplace(this->fValue(s_next), s_next);
             }
         }
     }
@@ -88,7 +86,7 @@ AStar::PointSetPair AStar::searching()
     return pathVisitedPair;
 }
 
-AStar::PointSetPair AStar::searchingRepeatedAStar(double e)
+AStar::PointSetPair AStar::searchingRepeatedAStar(double &e)
 {
     AStar::PointSetPair pathVisitedPair;
 
@@ -96,7 +94,7 @@ AStar::PointSetPair AStar::searchingRepeatedAStar(double e)
     return pathVisitedPair;
 }
 
-AStar::PointSetPair AStar::repeatedSearching(double e)
+AStar::PointSetPair AStar::repeatedSearching(double &e)
 {
     AStar::PointSetPair pathVisitedPair;
 
@@ -104,7 +102,7 @@ AStar::PointSetPair AStar::repeatedSearching(double e)
     return pathVisitedPair;
 }
 
-AStar::PointVector AStar::getNeighbours(AStar::Point s)
+AStar::PointVector AStar::getNeighbours(AStar::Point &s)
 {
     AStar::PointVector neighbours;
     AStar::Point s_next;
@@ -124,12 +122,12 @@ AStar::PointVector AStar::getNeighbours(AStar::Point s)
     return neighbours;
 }
 
-double AStar::cost(AStar::Point s_start, AStar::Point s_goal)
+double AStar::cost(AStar::Point &s_start, AStar::Point &s_goal)
 {
 
     if (this->isCollision(s_start, s_goal))
     {
-        return std::numeric_limits<double>::infinity();
+        return AStar::INF;
     }
     else
     {
@@ -137,7 +135,7 @@ double AStar::cost(AStar::Point s_start, AStar::Point s_goal)
     }
 }
 
-bool AStar::isCollision(AStar::Point s_start, AStar::Point s_goal)
+bool AStar::isCollision(AStar::Point &s_start, AStar::Point &s_goal)
 {
     if (_obs.find(s_start) != _obs.end() || _obs.find(s_goal) != _obs.end())
     {
@@ -170,12 +168,12 @@ bool AStar::isCollision(AStar::Point s_start, AStar::Point s_goal)
 }
 
 
-double AStar::fValue(AStar::Point s)
+double AStar::fValue(AStar::Point &s)
 {
     return _g[s] + this->heuristic(s);
 }
 
-AStar::PointSet AStar::extractPath(std::map<Point, Point> parent)
+AStar::PointSet AStar::extractPath(std::map<Point, Point> &parent)
 {
     AStar::PointSet path;
     
@@ -191,7 +189,7 @@ AStar::PointSet AStar::extractPath(std::map<Point, Point> parent)
     return path;
 }
 
-double AStar::heuristic(AStar::Point s)
+double AStar::heuristic(AStar::Point &s)
 {
     // A* uses a heuristic function to estimate the cost to reach the goal from a given node.
     // The quality of the heuristic greatly affects the efficiency of the A* search.

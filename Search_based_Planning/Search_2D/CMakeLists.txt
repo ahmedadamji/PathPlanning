@@ -19,6 +19,8 @@ set(SOURCES
     ${SOURCE_DIR}/Dummy.cpp
     ${SOURCE_DIR}/AStar.cpp
     ${SOURCE_DIR}/BFS.cpp
+    ${SOURCE_DIR}/DFS.cpp
+    ${SOURCE_DIR}/Dijkstra.cpp
     )
 
 # Include header files

@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <stack>
 #include <queue>
 #include <utility>
 #include <algorithm>
@@ -25,6 +26,9 @@ class AStar {
         typedef std::unordered_set<Point> UnorderedPointSet;
         typedef std::pair<PointVector, PointVector> PointVectorPair;
         typedef std::pair<PointSet, PointSet> PointSetPair;
+
+        static constexpr double INF = std::numeric_limits<double>::infinity();
+
 
         /**
          * @brief Construct a new AStar object 
@@ -56,7 +60,7 @@ class AStar {
          * @param e: The weight of A* algorithm.
          * @return pathVisitedPair: The path and visited nodes.
          */
-        PointSetPair searchingRepeatedAStar(double e);
+        PointSetPair searchingRepeatedAStar(double &e);
 
         /**
          * @brief Run the A* algorithm with repeated forward and backward search
@@ -66,7 +70,7 @@ class AStar {
          * @param e: The weight of A* algorithm.
          * @return pathVisitedPair: The path and visited nodes.
          */
-        PointSetPair repeatedSearching(double e);
+        PointSetPair repeatedSearching(double &e);
 
         /**
          * @brief Get Neighbours of a point
@@ -76,7 +80,7 @@ class AStar {
          * @param s: The state
          * @return neighbours: The neighbours of the state
          */
-        PointVector getNeighbours(Point s);
+        PointVector getNeighbours(Point &s);
 
         /**
          * @brief Get the cost of travelling from one point to another
@@ -87,7 +91,7 @@ class AStar {
          * @param s_goal: The goal point
          * @return cost: The cost of travelling from one point to another
          */
-        double cost(Point s_start, Point s_goal);
+        double cost(Point &s_start, Point &s_goal);
 
         /**
          * @brief Check if the line between two points is in collision
@@ -98,7 +102,7 @@ class AStar {
          * @param s_goal: The goal point
          * @return isColliding: True if the line segment is in collision, false otherwise
          */
-        bool isCollision(Point s_start, Point s_goal);
+        bool isCollision(Point &s_start, Point &s_goal);
 
         /**
          * @brief Get the f value of a point
@@ -109,7 +113,7 @@ class AStar {
          * @param s: The point
          * @return f: The f value of the point
          */
-        double fValue(Point s);
+        double fValue(Point &s);
 
         /**
          * @brief Extract the path from the parent dictionary
@@ -119,7 +123,7 @@ class AStar {
          * @param parent: The parent dictionary
          * @return path: The path 
          */
-        PointSet extractPath(std::map<Point, Point> parent);
+        PointSet extractPath(std::map<Point, Point> &parent);
 
         /**
          * @brief Get the heuristic value of a point
@@ -129,7 +133,7 @@ class AStar {
          * @param s: The point
          * @return h: The heuristic value of the point
          */
-        double heuristic(Point s);
+        double heuristic(Point &s);
         
         /**
          * @brief Display the plots
@@ -147,11 +151,15 @@ class AStar {
         PointVector _path; // list of path points
         PointVector _uSet; // list of motions
 
+        // These could ideally be unordered sets, to speed up lookup, but pairs are not hashable by default in C++.
+        // This does not create problems with sets because set in C++ is implemented as a binary search tree and not a hash table.
         PointSet _closed; // list of closed nodes
         PointSet _obs; // set of obstacles
 
         std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > _open; // priority queue of open nodes
-
+        // std::queue<Point> _open;
+        // std::stack<Point> _open;
+        
         std::map<Point, Point> _parent; // dict of parents of each node
         std::map<Point, double> _g; // cost from start to current node
 

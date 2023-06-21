@@ -1,5 +1,5 @@
-#ifndef BFS_H
-#define BFS_H
+#ifndef DFS_H
+#define DFS_H
 
 #include "Plotting.h"
 #include "Env.h"
@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <math.h>
 
-class BFS: public AStar
+class DFS: public AStar
 {
     public:
         /**
@@ -28,12 +28,12 @@ class BFS: public AStar
          * @param xG 
          * @param heuristic_type 
          */
-        BFS(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
+        DFS(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
 
         /**
-         * @brief Run the BFS algorithm
+         * @brief Run the DFS algorithm
          * 
-         * This function runs the BFS algorithm and returns the path and visited nodes.
+         * This function runs the DFS algorithm and returns the path and visited nodes.
          * 
          * @return pathVisitedPair: The path and visited nodes.
          */
@@ -42,8 +42,8 @@ class BFS: public AStar
 
 
     private:
-        std::queue<Point> _open;
+        std::stack<Point> _open;
 
 };
 
-#endif  // BFS_H
+#endif  // DFS_H
