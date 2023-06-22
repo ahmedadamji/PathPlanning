@@ -5,6 +5,8 @@
 #include "BFS.h"
 #include "DFS.h"
 #include "Dijkstra.h"
+#include "BestFirst.h"
+#include "BidirectionalAStar.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -36,22 +38,30 @@ int main()
     // AStar astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // AStar::PointSetPair pathVisitedPair = astar.searching();
 
-
     // // Initialize and run the BFS algorithm.
     // // BFS bfs(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // BFS bfs(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // BFS::PointSetPair pathVisitedPair = bfs.searching();
-
 
     // // Initialize and run the DFS algorithm.
     // // BFS dfs(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // DFS dfs(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // DFS::PointSetPair pathVisitedPair = dfs.searching();
 
-    // Initialize and run the Dijkstra algorithm.
-    // Dijkstra dijkstra(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    Dijkstra dijkstra(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    Dijkstra::PointSetPair pathVisitedPair = dijkstra.searching();
+    // // Initialize and run the Dijkstra algorithm.
+    // // Dijkstra dijkstra(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // Dijkstra dijkstra(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // Dijkstra::PointSetPair pathVisitedPair = dijkstra.searching();
+
+    // // Initialize and run the BestFirst algorithm.
+    // // BestFirst bestfirst(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // BestFirst bestfirst(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // BestFirst::PointSetPair pathVisitedPair = bestfirst.searching();
+
+    // Initialize and run the BidirectionalAStar algorithm.
+    // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    BidirectionalAStar::PointSetPair pathVisitedPair = bidirectional_astar.searching();
 
     return 0;
 }

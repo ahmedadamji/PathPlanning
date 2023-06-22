@@ -177,6 +177,60 @@ src/BFS.cpp.s:
 	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BFS.cpp.s
 .PHONY : src/BFS.cpp.s
 
+src/BestFirst.o: src/BestFirst.cpp.o
+
+.PHONY : src/BestFirst.o
+
+# target to build an object file
+src/BestFirst.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o
+.PHONY : src/BestFirst.cpp.o
+
+src/BestFirst.i: src/BestFirst.cpp.i
+
+.PHONY : src/BestFirst.i
+
+# target to preprocess a source file
+src/BestFirst.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.i
+.PHONY : src/BestFirst.cpp.i
+
+src/BestFirst.s: src/BestFirst.cpp.s
+
+.PHONY : src/BestFirst.s
+
+# target to generate assembly for a file
+src/BestFirst.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.s
+.PHONY : src/BestFirst.cpp.s
+
+src/BidirectionalAStar.o: src/BidirectionalAStar.cpp.o
+
+.PHONY : src/BidirectionalAStar.o
+
+# target to build an object file
+src/BidirectionalAStar.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o
+.PHONY : src/BidirectionalAStar.cpp.o
+
+src/BidirectionalAStar.i: src/BidirectionalAStar.cpp.i
+
+.PHONY : src/BidirectionalAStar.i
+
+# target to preprocess a source file
+src/BidirectionalAStar.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.i
+.PHONY : src/BidirectionalAStar.cpp.i
+
+src/BidirectionalAStar.s: src/BidirectionalAStar.cpp.s
+
+.PHONY : src/BidirectionalAStar.s
+
+# target to generate assembly for a file
+src/BidirectionalAStar.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.s
+.PHONY : src/BidirectionalAStar.cpp.s
+
 src/DFS.o: src/DFS.cpp.o
 
 .PHONY : src/DFS.o
@@ -354,6 +408,12 @@ help:
 	@echo "... src/BFS.o"
 	@echo "... src/BFS.i"
 	@echo "... src/BFS.s"
+	@echo "... src/BestFirst.o"
+	@echo "... src/BestFirst.i"
+	@echo "... src/BestFirst.s"
+	@echo "... src/BidirectionalAStar.o"
+	@echo "... src/BidirectionalAStar.i"
+	@echo "... src/BidirectionalAStar.s"
 	@echo "... src/DFS.o"
 	@echo "... src/DFS.i"
 	@echo "... src/DFS.s"

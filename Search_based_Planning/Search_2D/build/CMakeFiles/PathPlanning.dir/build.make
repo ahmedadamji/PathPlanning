@@ -161,6 +161,32 @@ CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/Dijkstra.cpp -o CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.s
 
+CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o: CMakeFiles/PathPlanning.dir/flags.make
+CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o: ../src/BestFirst.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o -c /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/BestFirst.cpp
+
+CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/BestFirst.cpp > CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.i
+
+CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/BestFirst.cpp -o CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.s
+
+CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o: CMakeFiles/PathPlanning.dir/flags.make
+CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o: ../src/BidirectionalAStar.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o -c /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/BidirectionalAStar.cpp
+
+CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/BidirectionalAStar.cpp > CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.i
+
+CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/BidirectionalAStar.cpp -o CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.s
+
 # Object files for target PathPlanning
 PathPlanning_OBJECTS = \
 "CMakeFiles/PathPlanning.dir/src/main.cpp.o" \
@@ -170,7 +196,9 @@ PathPlanning_OBJECTS = \
 "CMakeFiles/PathPlanning.dir/src/AStar.cpp.o" \
 "CMakeFiles/PathPlanning.dir/src/BFS.cpp.o" \
 "CMakeFiles/PathPlanning.dir/src/DFS.cpp.o" \
-"CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.o"
+"CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.o" \
+"CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o" \
+"CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o"
 
 # External object files for target PathPlanning
 PathPlanning_EXTERNAL_OBJECTS =
@@ -183,6 +211,8 @@ PathPlanning: CMakeFiles/PathPlanning.dir/src/AStar.cpp.o
 PathPlanning: CMakeFiles/PathPlanning.dir/src/BFS.cpp.o
 PathPlanning: CMakeFiles/PathPlanning.dir/src/DFS.cpp.o
 PathPlanning: CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.o
+PathPlanning: CMakeFiles/PathPlanning.dir/src/BestFirst.cpp.o
+PathPlanning: CMakeFiles/PathPlanning.dir/src/BidirectionalAStar.cpp.o
 PathPlanning: CMakeFiles/PathPlanning.dir/build.make
 PathPlanning: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.4.2.0
 PathPlanning: /usr/lib/x86_64-linux-gnu/libopencv_aruco.so.4.2.0
@@ -233,7 +263,7 @@ PathPlanning: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.4.2.0
 PathPlanning: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.4.2.0
 PathPlanning: /usr/lib/x86_64-linux-gnu/libopencv_core.so.4.2.0
 PathPlanning: CMakeFiles/PathPlanning.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable PathPlanning"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable PathPlanning"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/PathPlanning.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -1,4 +1,4 @@
-#include "Dijkstra.h"
+#include "BestFirst.h"
 #include "Plotting.h"
 #include "Env.h"
 #include <iostream>
@@ -13,12 +13,12 @@
 #include <math.h>
 
 
-Dijkstra::PointSetPair Dijkstra::searching()
+BestFirst::PointSetPair BestFirst::searching()
 {
-    Dijkstra::PointSetPair pathVisitedPair;
+    BestFirst::PointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
-    _g[_xG] = Dijkstra::INF;
+    _g[_xG] = BestFirst::INF;
     
     std::cout << "Starting at:" << std::endl;
     std::cout << "xI: " << _xI.first << ", " << _xI.second << std::endl;
@@ -29,7 +29,7 @@ Dijkstra::PointSetPair Dijkstra::searching()
 
     while(!_open.empty())
     {
-        Dijkstra::Point s = _open.top().second;
+        BestFirst::Point s = _open.top().second;
         _xC = s;
         _open.pop();
         _closed.insert(s);
@@ -50,19 +50,19 @@ Dijkstra::PointSetPair Dijkstra::searching()
             break;
         }
 
-        Dijkstra::PointVector neighbours = this->getNeighbours(s);
+        BestFirst::PointVector neighbours = this->getNeighbours(s);
         for(auto s_next : neighbours)
         {
             double new_cost = _g[s] + this->cost(s, s_next);
 
             // Insert is used as it does not overwrite the value if the key already exists.
-            auto result = _g.insert({s_next, Dijkstra::INF});
+            auto result = _g.insert({s_next, BestFirst::INF});
 
             if(new_cost < _g[s_next])
             {
                 _g[s_next] = new_cost;
                 _parent[s_next] = s;
-                _open.emplace(new_cost, s_next);
+                _open.emplace(this->heuristic(s_next), s_next);
             }
         }
     }

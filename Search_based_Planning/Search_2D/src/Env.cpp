@@ -33,7 +33,7 @@ std::set<std::pair<int, int>> Env::obs_map() {
     std::set<std::pair<int, int>> obs;
     int total_cells = x_range * y_range;
 
-    int num_walls = 4;
+    int num_walls = 5;
     int min_wall_length = 5;
     int max_wall_length = 20;
     std::random_device rd;

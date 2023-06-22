@@ -63,6 +63,7 @@ AStar::PointSetPair AStar::searching()
         {
             double new_cost = _g[s] + this->cost(s, s_next);
 
+            // Insert is used as it does not overwrite the value if the key already exists.
             auto result = _g.insert({s_next, AStar::INF});
 
             if(new_cost < _g[s_next])

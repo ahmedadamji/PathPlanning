@@ -62,6 +62,7 @@ BFS::PointSetPair BFS::searching()
             
             double new_cost = _g[_xC] + this->cost(_xC, s_next);
 
+            // Insert is used as it does not overwrite the value if the key already exists.
             auto result = _g.insert({s_next, BFS::INF});
 
 

@@ -1,5 +1,5 @@
-#ifndef DIJKSTRA_H
-#define DIJKSTRA_H
+#ifndef BESTFIRST_H
+#define BESTFIRST_H
 
 #include "Plotting.h"
 #include "Env.h"
@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <math.h>
 
-class Dijkstra: public AStar
+class BestFirst: public AStar
 {
     public:
         /**
@@ -28,12 +28,12 @@ class Dijkstra: public AStar
          * @param xG 
          * @param heuristic_type 
          */
-        Dijkstra(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
+        BestFirst(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
 
         /**
-         * @brief Run the Dijkstra algorithm
+         * @brief Run the BestFirst algorithm
          * 
-         * This function runs the Dijkstra algorithm and returns the path and visited nodes.
+         * This function runs the BestFirst algorithm and returns the path and visited nodes.
          * 
          * @return pathVisitedPair: The path and visited nodes.
          */
@@ -46,4 +46,4 @@ class Dijkstra: public AStar
 
 };
 
-#endif  // Dijkstra_H
+#endif  // BestFirst_H

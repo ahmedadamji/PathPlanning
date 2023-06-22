@@ -21,6 +21,8 @@ set(SOURCES
     ${SOURCE_DIR}/BFS.cpp
     ${SOURCE_DIR}/DFS.cpp
     ${SOURCE_DIR}/Dijkstra.cpp
+    ${SOURCE_DIR}/BestFirst.cpp
+    ${SOURCE_DIR}/BidirectionalAStar.cpp
     )
 
 # Include header files

@@ -49,6 +49,16 @@ void Plotting::plot_visited(std::set<std::pair<int, int>> visited) {
     }
 }
 
+void Plotting::plot_visited(std::set<std::pair<int, int>> visited, std::vector<int> color) {
+    for(auto const& visit_point : visited) {
+        cv::rectangle(image, 
+                      cv::Point(visit_point.first*cell_size, visit_point.second*cell_size), 
+                      cv::Point((visit_point.first+1)*cell_size - 2, (visit_point.second+1)*cell_size - 2), 
+                      cv::Scalar(color[0], color[1], color[2]), 
+                      -1); // Visited point color
+    }
+}
+
 void Plotting::plot_path(std::set<std::pair<int, int>> path) {
     for(auto const& path_point : path) {
         cv::rectangle(image, 
