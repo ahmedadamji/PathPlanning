@@ -49,12 +49,12 @@ void Plotting::plot_visited(std::set<std::pair<int, int>> visited) {
     }
 }
 
-void Plotting::plot_visited(std::set<std::pair<int, int>> visited, std::vector<int> color) {
+void Plotting::plot_visited(std::set<std::pair<int, int>> visited, cv::Scalar color) {
     for(auto const& visit_point : visited) {
         cv::rectangle(image, 
                       cv::Point(visit_point.first*cell_size, visit_point.second*cell_size), 
                       cv::Point((visit_point.first+1)*cell_size - 2, (visit_point.second+1)*cell_size - 2), 
-                      cv::Scalar(color[0], color[1], color[2]), 
+                      color, 
                       -1); // Visited point color
     }
 }
@@ -67,6 +67,38 @@ void Plotting::plot_path(std::set<std::pair<int, int>> path) {
                       cv::Scalar(0, 0, 255), 
                       -1); // Path color
     }
+}
+
+void Plotting::plot_path(std::set<std::pair<int, int>> path, cv::Scalar color) {
+    for(auto const& path_point : path) {
+        cv::rectangle(image, 
+                      cv::Point(path_point.first*cell_size, path_point.second*cell_size), 
+                      cv::Point((path_point.first+1)*cell_size - 2, (path_point.second+1)*cell_size - 2), 
+                      color, 
+                      -1); // Path color
+    }
+}
+
+std::vector<cv::Scalar> Plotting::colorListV()
+{
+    std::vector<cv::Scalar> cl_v;
+    cl_v.push_back(cv::Scalar(192, 192, 192));  // silver
+    cl_v.push_back(cv::Scalar(179, 222, 245));  // wheat
+    cl_v.push_back(cv::Scalar(250, 206, 235));  // lightskyblue
+    cl_v.push_back(cv::Scalar(225, 105, 65));   // royalblue
+    cl_v.push_back(cv::Scalar(112, 128, 144));  // slategray
+    return cl_v;
+}
+
+std::vector<cv::Scalar> Plotting::colorListP()
+{
+    std::vector<cv::Scalar> cl_p;
+    cl_p.push_back(cv::Scalar(128, 128, 128));  // gray
+    cl_p.push_back(cv::Scalar(0, 165, 255));    // orange
+    cl_p.push_back(cv::Scalar(255, 191, 0));    // deepskyblue
+    cl_p.push_back(cv::Scalar(0, 0, 255));      // red
+    cl_p.push_back(cv::Scalar(255, 0, 255));    // m (magenta)
+    return cl_p;
 }
 
 

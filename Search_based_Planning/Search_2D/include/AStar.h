@@ -67,10 +67,12 @@ class AStar {
          * 
          * This function runs the A* algorithm with repeated forward and backward search and returns the path and visited nodes.
          * 
+         * @param xI: The start point.
+         * @param xG: The goal point.
          * @param e: The weight of A* algorithm.
          * @return pathVisitedPair: The path and visited nodes.
          */
-        PointSetPair repeatedSearching(double &e);
+        PointSetPair repeatedSearching(AStar::Point &xI, AStar::Point &xG, double &e);
 
         /**
          * @brief Get Neighbours of a point
@@ -164,6 +166,8 @@ class AStar {
         std::map<Point, double> _g; // cost from start to current node
 
         std::string _heuristicType; // type of heuristic
+
+        int _repeatedCount = 0; // count of repeated A* iterations
 
         // added private references
         Env& _env; 

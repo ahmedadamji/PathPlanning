@@ -38,7 +38,7 @@ AStar::PointSetPair AStar::searching()
     while(!_open.empty())
     {
         Point s = _open.top().second;
-        _xC = s;
+        // _xC = s;
         _open.pop();
         _closed.insert(s);
         
@@ -90,16 +90,101 @@ AStar::PointSetPair AStar::searching()
 AStar::PointSetPair AStar::searchingRepeatedAStar(double &e)
 {
     AStar::PointSetPair pathVisitedPair;
+    
+    AStar::PointSet path;
+    AStar::PointSet closed;
+
+    while (e >= 1.0)
+    {
+        pathVisitedPair = this->repeatedSearching(_xI, _xG, e);
+        path.insert(pathVisitedPair.first.begin(), pathVisitedPair.first.end());
+        closed.insert(pathVisitedPair.second.begin(), pathVisitedPair.second.end());
+        e -= 0.5;
+        _repeatedCount += 1;
+    }
+
+    _plot.show_image();
+    cv::waitKey(0);
+    
+    pathVisitedPair.first = path;
+    pathVisitedPair.second = closed;
 
 
     return pathVisitedPair;
 }
 
-AStar::PointSetPair AStar::repeatedSearching(double &e)
+AStar::PointSetPair AStar::repeatedSearching(AStar::Point &xI, AStar::Point &xG, double &e)
 {
     AStar::PointSetPair pathVisitedPair;
 
+    std::map<Point, Point> parent;
+    parent[xI] = xI;
 
+    std::map<Point, double> g;
+    g[xI] = 0.0;
+    g[xG] = AStar::INF;
+    
+    std::cout << "Starting at:" << std::endl;
+    std::cout << "xI: " << xI.first << ", " << xI.second << std::endl;
+
+    std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > open; // priority queue of open nodes
+
+    double f = g[xI] + (e * this->heuristic(xI));
+    open.emplace(f, xI);
+
+    PointSet closed; // list of closed nodes
+
+    int count = 0;
+
+    while(!open.empty())
+    {
+        Point s = open.top().second;
+        // _xC = s;
+        open.pop();
+        closed.insert(s);
+        
+        
+        if (count % 25 == 0)
+        {
+            // Plot visited points and path.
+            _plot.plot_visited(_closed, Plotting::colorListV()[_repeatedCount]);
+            _plot.show_image();
+            cv::waitKey(25); // Pause for a short time
+        }
+
+        count++;
+
+        if(s == xG)
+        {           
+            std::cout << "Goal found!" << std::endl; 
+            break;
+        }
+
+        PointVector neighbours = this->getNeighbours(s);
+        for(auto s_next : neighbours)
+        {
+            double new_cost = g[s] + this->cost(s, s_next);
+
+            // Insert is used as it does not overwrite the value if the key already exists.
+            auto result = g.insert({s_next, AStar::INF});
+
+            if(new_cost < g[s_next])
+            {
+                g[s_next] = new_cost;
+                parent[s_next] = s;
+                f = g[s_next] + (e * this->heuristic(s_next));
+                open.emplace(f, s_next);
+            }
+        }
+    }
+
+    // Plot visited points and path.
+    _plot.plot_visited(closed, Plotting::colorListV()[_repeatedCount]);
+    _plot.plot_path(this->extractPath(parent), Plotting::colorListP()[_repeatedCount]);
+    
+    pathVisitedPair.first = this->extractPath(parent);
+    pathVisitedPair.second = closed;
+    
     return pathVisitedPair;
 }
 

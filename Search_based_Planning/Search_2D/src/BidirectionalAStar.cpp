@@ -131,10 +131,8 @@ BidirectionalAStar::PointSetPair BidirectionalAStar::searching()
     std::cout << _closed_backward.size() << std::endl;
 
     // Plot visited points and path.
-    std::vector<int> color_forward = {0, 125, 125};
-    _plot.plot_visited(_closed_forward, color_forward);
-    std::vector<int> color_backward = {125, 125, 0};
-    _plot.plot_visited(_closed_backward, color_backward);
+    _plot.plot_visited(_closed_forward, _plot.colorListV()[0]);
+    _plot.plot_visited(_closed_backward, _plot.colorListV()[1]);
     _plot.plot_path(this->extractPath());
     _plot.show_image();
     cv::waitKey(0);
@@ -224,9 +222,7 @@ BidirectionalAStar::PointSet BidirectionalAStar::extractPath()
 
 void BidirectionalAStar::displayPlots()
 {
-    std::vector<int> color_forward = {0, 125, 125};
-    _plot.plot_visited(_closed_forward, color_forward);
-    std::vector<int> color_backward = {125, 125, 0};
-    _plot.plot_visited(_closed_backward, color_backward);
+    _plot.plot_visited(_closed_forward, _plot.colorListV()[0]);
+    _plot.plot_visited(_closed_backward, _plot.colorListV()[1]);
     _plot.show_image();
 }

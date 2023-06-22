@@ -41,13 +41,42 @@ public:
      * @param visited 
      * @param color 
      */
-    void plot_visited(std::set<std::pair<int, int>> visited, std::vector<int> color);
+    void plot_visited(std::set<std::pair<int, int>> visited, cv::Scalar color);
     /**
      * @brief Plot the path
      * 
      * @param path 
      */
     void plot_path(std::set<std::pair<int, int>> path);
+    
+    /**
+     * @brief Plot the path with specified colors
+     * 
+     * @param path 
+     * @param color 
+     */
+    void plot_path(std::set<std::pair<int, int>> path, cv::Scalar color);
+
+    /**
+     * @brief Get a vector of BGR colors (as cv::Scalar) based on a pre-defined list.
+     *
+     * The function returns a vector containing BGR color values (as cv::Scalar objects)
+     * corresponding to the following color names: silver, wheat, lightskyblue, royalblue, slategray.
+     *
+     * @return std::vector<cv::Scalar> Vector of BGR colors as cv::Scalar objects.
+     */
+    static std::vector<cv::Scalar> colorListV();
+
+    /**
+     * @brief Get a vector of BGR colors (as cv::Scalar) based on a pre-defined list.
+     *
+     * The function returns a vector containing BGR color values (as cv::Scalar objects)
+     * corresponding to the following color names: gray, orange, deepskyblue, red, magenta.
+     *
+     * @return std::vector<cv::Scalar> Vector of BGR colors as cv::Scalar objects.
+     */
+    static std::vector<cv::Scalar> colorListP();
+
     /**
      * @brief Show the image
      * 
