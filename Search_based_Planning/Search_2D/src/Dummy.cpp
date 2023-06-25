@@ -33,7 +33,7 @@ void Dummy::display_plots(Plotting &plot,
 {
     plot.plot_visited(visited);
     plot.plot_path(path);
-    plot.show_image();
+    plot.show_image("Dummy");
 }
 
 void Dummy::expand_search_and_plot(int x, int y, double &expand_search, 

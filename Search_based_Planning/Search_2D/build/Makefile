@@ -285,33 +285,6 @@ src/Dijkstra.cpp.s:
 	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.s
 .PHONY : src/Dijkstra.cpp.s
 
-src/Dummy.o: src/Dummy.cpp.o
-
-.PHONY : src/Dummy.o
-
-# target to build an object file
-src/Dummy.cpp.o:
-	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dummy.cpp.o
-.PHONY : src/Dummy.cpp.o
-
-src/Dummy.i: src/Dummy.cpp.i
-
-.PHONY : src/Dummy.i
-
-# target to preprocess a source file
-src/Dummy.cpp.i:
-	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dummy.cpp.i
-.PHONY : src/Dummy.cpp.i
-
-src/Dummy.s: src/Dummy.cpp.s
-
-.PHONY : src/Dummy.s
-
-# target to generate assembly for a file
-src/Dummy.cpp.s:
-	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Dummy.cpp.s
-.PHONY : src/Dummy.cpp.s
-
 src/Env.o: src/Env.cpp.o
 
 .PHONY : src/Env.o
@@ -420,9 +393,6 @@ help:
 	@echo "... src/Dijkstra.o"
 	@echo "... src/Dijkstra.i"
 	@echo "... src/Dijkstra.s"
-	@echo "... src/Dummy.o"
-	@echo "... src/Dummy.i"
-	@echo "... src/Dummy.s"
 	@echo "... src/Env.o"
 	@echo "... src/Env.i"
 	@echo "... src/Env.s"

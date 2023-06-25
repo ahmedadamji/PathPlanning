@@ -13,9 +13,9 @@
 #include <math.h>
 
 
-DFS::PointSetPair DFS::searching()
+DFS::PointVectorPointSetPair DFS::searching()
 {
-    DFS::PointSetPair pathVisitedPair;
+    DFS::PointVectorPointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
     _g[_xG] = DFS::INF;
@@ -25,23 +25,13 @@ DFS::PointSetPair DFS::searching()
 
     _open.push(_xI);
 
-    int count = 0;
-
     while(!_open.empty())
     {
         _xC = _open.top();
         _open.pop();
         _closed.insert(_xC);
         
-        
-        if (count % 100 == 0)
-        {
-            // Plot visited points and path.
-            this->displayPlots();
-            cv::waitKey(5); // Pause for a short time
-        }
-
-        count++;
+        _plot.plot_animation("Depth-First Search", _closed, _path);
 
         if(_xC == _xG)
         {
@@ -91,15 +81,13 @@ DFS::PointSetPair DFS::searching()
 
     std::cout << "Number of visited nodes: ";
     std::cout << _closed.size() << std::endl;
+    
+    _path = this->extractPath(_parent);
+    pathVisitedPair.first = _path;
+    pathVisitedPair.second = _closed;
 
     // Plot visited points and path.
-    _plot.plot_visited(_closed);
-    _plot.plot_path(this->extractPath(_parent));
-    _plot.show_image();
-    cv::waitKey(0);
-    
-    pathVisitedPair.first = this->extractPath(_parent);
-    pathVisitedPair.second = _closed;
+    _plot.plot_animation("Depth-First Search", _closed, _path);
     
     return pathVisitedPair;
 }

@@ -13,9 +13,9 @@
 #include <math.h>
 
 
-BFS::PointSetPair BFS::searching()
+BFS::PointVectorPointSetPair BFS::searching()
 {
-    BFS::PointSetPair pathVisitedPair;
+    BFS::PointVectorPointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
     _g[_xG] = BFS::INF;
@@ -25,23 +25,13 @@ BFS::PointSetPair BFS::searching()
 
     _open.push(_xI);
 
-    int count = 0;
-
     while(!_open.empty())
     {
         _xC = _open.front();
         _open.pop();
         _closed.insert(_xC);
         
-        
-        if (count % 25 == 0)
-        {
-            // Plot visited points and path.
-            this->displayPlots();
-            cv::waitKey(25); // Pause for a short time
-        }
-
-        count++;
+        _plot.plot_animation("Breadth-First Search", _closed, _path);
 
         if(_xC == _xG)
         {
@@ -94,10 +84,11 @@ BFS::PointSetPair BFS::searching()
     std::cout << _closed.size() << std::endl;
 
     // Plot visited points and path.
-    _plot.plot_visited(_closed);
-    _plot.plot_path(this->extractPath(_parent));
-    _plot.show_image();
-    cv::waitKey(0);
+    // _plot.plot_visited(_closed);
+    // _plot.plot_path(this->extractPath(_parent));
+    // _plot.show_image("Breadth-First Search");
+    // cv::waitKey(0);
+    _plot.plot_animation("Breadth-First Search", _closed, this->extractPath(_parent));
     
     pathVisitedPair.first = this->extractPath(_parent);
     pathVisitedPair.second = _closed;

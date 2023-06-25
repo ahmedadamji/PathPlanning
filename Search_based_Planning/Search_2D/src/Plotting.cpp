@@ -59,25 +59,115 @@ void Plotting::plot_visited(std::set<std::pair<int, int>> visited, cv::Scalar co
     }
 }
 
-void Plotting::plot_path(std::set<std::pair<int, int>> path) {
+void Plotting::plot_path(std::vector<std::pair<int, int>> path) {
+    std::reverse(path.begin(), path.end()); // Reverse the path
+    std::pair<int, int> last_point = path[0];
     for(auto const& path_point : path) {
-        cv::rectangle(image, 
-                      cv::Point(path_point.first*cell_size, path_point.second*cell_size), 
-                      cv::Point((path_point.first+1)*cell_size - 2, (path_point.second+1)*cell_size - 2), 
-                      cv::Scalar(0, 0, 255), 
-                      -1); // Path color
+        cv::line(image, 
+                 cv::Point(last_point.first*cell_size + cell_size/2, last_point.second*cell_size + cell_size/2), 
+                 cv::Point(path_point.first*cell_size + cell_size/2, path_point.second*cell_size + cell_size/2), 
+                 cv::Scalar(0, 0, 255), 
+                 3); // Path color
+        last_point = path_point;
     }
 }
 
-void Plotting::plot_path(std::set<std::pair<int, int>> path, cv::Scalar color) {
+
+
+void Plotting::plot_path(std::vector<std::pair<int, int>> path, cv::Scalar color) {
+    std::reverse(path.begin(), path.end()); // Reverse the path
+    std::pair<int, int> last_point = path[0];
     for(auto const& path_point : path) {
-        cv::rectangle(image, 
-                      cv::Point(path_point.first*cell_size, path_point.second*cell_size), 
-                      cv::Point((path_point.first+1)*cell_size - 2, (path_point.second+1)*cell_size - 2), 
-                      color, 
-                      -1); // Path color
+        cv::line(image, 
+                 cv::Point(last_point.first*cell_size + cell_size/2, last_point.second*cell_size + cell_size/2), 
+                 cv::Point(path_point.first*cell_size + cell_size/2, path_point.second*cell_size + cell_size/2), 
+                 color, 
+                 3); // Path color
+        last_point = path_point;
     }
 }
+
+
+void Plotting::show_image(std::string windowName) {
+    this->plot_grid();
+    cv::namedWindow(windowName, cv::WINDOW_NORMAL);  // Create window with freedom of resizing
+    cv::imshow(windowName, image);
+    
+}
+
+void Plotting::plot_animation(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path) {
+
+    this->plot_visited(visited);
+
+    if (!path.empty()) {
+        // for (const auto& path_step : path) {
+        //     if (path_step == xG) {
+        //         break;
+        //     }
+        //     this->plot_path({path_step});
+        //     this->show_image(windowName);
+        //     cv::waitKey(12);
+        // }
+        this->plot_path(path);
+        this->show_image(windowName);
+        cv::waitKey(0);
+    }
+    else {
+        this->show_image(windowName);
+        cv::waitKey(1);
+    }
+
+    
+}
+
+void Plotting::plot_animation_repeated_astar(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path, int repeated_count, bool is_last) {
+
+    this->plot_visited(visited, this->colorListV()[repeated_count]);
+
+    if (!path.empty()) {
+        // for (const auto& path_step : path) {
+        //     if (path_step == xG) {
+        //         break;
+        //     }
+        //     this->plot_path({path_step}, this->colorListP()[repeated_count]);
+        //     this->show_image(windowName);
+        //     cv::waitKey(12);
+        // }
+        this->plot_path(path, this->colorListP()[repeated_count]);
+        if(is_last) {
+            this->show_image(windowName);
+            cv::waitKey(0);
+        }
+        else {
+            this->show_image(windowName);
+            cv::waitKey(25);
+        }
+    }
+    else {
+        this->show_image(windowName);
+        cv::waitKey(2);
+    }
+
+    
+}
+
+void Plotting::plot_animation_bidirectional_astar(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path, bool is_forward) {
+
+    this->plot_visited(visited, this->colorListV()[is_forward]);
+
+    if ((!path.empty()) && !is_forward) {
+        this->plot_path(path);
+        this->show_image(windowName);
+        cv::waitKey(0);
+    }
+    else {
+        this->show_image(windowName);
+        cv::waitKey(2);
+    }
+
+    
+}
+
 
 std::vector<cv::Scalar> Plotting::colorListV()
 {
@@ -101,10 +191,3 @@ std::vector<cv::Scalar> Plotting::colorListP()
     return cl_p;
 }
 
-
-void Plotting::show_image() {
-    this->plot_grid();
-    cv::namedWindow("Path", cv::WINDOW_NORMAL);  // Create window with freedom of resizing
-    cv::imshow("Path", image);
-    
-}

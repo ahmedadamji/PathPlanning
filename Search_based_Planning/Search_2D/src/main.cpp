@@ -36,38 +36,38 @@ int main()
     // // Initialize and run the A* algorithm.
     // // AStar astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // AStar astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // AStar::PointSetPair pathVisitedPair = astar.searching();
+    // AStar::PointVectorPointSetPair pathVisitedPair = astar.searching();
 
     // // Initialize and run the BFS algorithm.
     // // BFS bfs(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // BFS bfs(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // BFS::PointSetPair pathVisitedPair = bfs.searching();
+    // BFS::PointVectorPointSetPair pathVisitedPair = bfs.searching();
 
     // // Initialize and run the DFS algorithm.
     // // BFS dfs(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // DFS dfs(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // DFS::PointSetPair pathVisitedPair = dfs.searching();
+    // DFS::PointVectorPointSetPair pathVisitedPair = dfs.searching();
 
     // // Initialize and run the Dijkstra algorithm.
     // // Dijkstra dijkstra(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // Dijkstra dijkstra(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // Dijkstra::PointSetPair pathVisitedPair = dijkstra.searching();
+    // Dijkstra::PointVectorPointSetPair pathVisitedPair = dijkstra.searching();
 
     // // Initialize and run the BestFirst algorithm.
     // // BestFirst bestfirst(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // BestFirst bestfirst(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // BestFirst::PointSetPair pathVisitedPair = bestfirst.searching();
+    // BestFirst::PointVectorPointSetPair pathVisitedPair = bestfirst.searching();
 
-    // // Initialize and run the BidirectionalAStar algorithm.
-    // // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // BidirectionalAStar::PointSetPair pathVisitedPair = bidirectional_astar.searching();
+    // Initialize and run the BidirectionalAStar algorithm.
+    // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    BidirectionalAStar::PointVectorPointSetPair pathVisitedPair = bidirectional_astar.searching();
 
-    // Initialize and run the Repeated A* algorithm.
-    // AStar astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    AStar astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    double e = 2.5;
-    AStar::PointSetPair pathVisitedPair = astar.searchingRepeatedAStar(e);
+    // // Initialize and run the Repeated A* algorithm.
+    // // AStar astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // AStar astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // double e = 2.5;
+    // AStar::PointVectorPointSetPair pathVisitedPair = astar.searchingRepeatedAStar(e);
 
     return 0;
 }

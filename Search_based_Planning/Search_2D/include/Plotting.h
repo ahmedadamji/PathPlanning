@@ -47,7 +47,7 @@ public:
      * 
      * @param path 
      */
-    void plot_path(std::set<std::pair<int, int>> path);
+    void plot_path(std::vector<std::pair<int, int>> path);
     
     /**
      * @brief Plot the path with specified colors
@@ -55,8 +55,45 @@ public:
      * @param path 
      * @param color 
      */
-    void plot_path(std::set<std::pair<int, int>> path, cv::Scalar color);
+    void plot_path(std::vector<std::pair<int, int>> path, cv::Scalar color);
 
+    /**
+     * @brief Show the image
+     * 
+     * @param windowName
+     */
+    void show_image(std::string windowName);
+    
+    /**
+     * @brief Plot the path and visited nodes
+     * 
+     * @param windowName 
+     * @param path 
+     * @param visited 
+     */
+    void plot_animation(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path);
+
+    /**
+     * @brief Plot the path and visited nodes for repeated A*
+     * 
+     * @param windowName 
+     * @param path 
+     * @param visited 
+     * @param repeated_count 
+     * @param is_last 
+     */
+    void plot_animation_repeated_astar(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path, int repeated_count, bool is_last);
+
+    /**
+     * @brief Plot the path and visited nodes for bidirectional A*
+     * 
+     * @param windowName 
+     * @param path 
+     * @param visited 
+     * @param is_forward 
+     */
+    void plot_animation_bidirectional_astar(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path, bool is_forward);
+    
     /**
      * @brief Get a vector of BGR colors (as cv::Scalar) based on a pre-defined list.
      *
@@ -77,11 +114,6 @@ public:
      */
     static std::vector<cv::Scalar> colorListP();
 
-    /**
-     * @brief Show the image
-     * 
-     */
-    void show_image();
     
     std::pair<int, int> xI, xG;
     std::set<std::pair<int, int>> obs;

@@ -29,9 +29,9 @@ void BidirectionalAStar::init()
 }
 
 
-BidirectionalAStar::PointSetPair BidirectionalAStar::searching()
+BidirectionalAStar::PointVectorPointSetPair BidirectionalAStar::searching()
 {
-    BidirectionalAStar::PointSetPair pathVisitedPair;
+    BidirectionalAStar::PointVectorPointSetPair pathVisitedPair;
 
     this->init();
     
@@ -45,15 +45,6 @@ BidirectionalAStar::PointSetPair BidirectionalAStar::searching()
 
     while(!_open_forward.empty() && !_open_backward.empty())
     {
-        
-        if (count % 10 == 0)
-        {
-            // Plot visited points and path.
-            this->displayPlots();
-            cv::waitKey(40); // Pause for a short time
-        }
-
-        count++;
 
         // Forward search
 
@@ -68,6 +59,8 @@ BidirectionalAStar::PointSetPair BidirectionalAStar::searching()
         }
 
         _closed_forward.insert(_xCF);
+
+        _plot.plot_animation_bidirectional_astar("Bidirectional A*", _closed_forward, _path, true);
         
 
         BidirectionalAStar::PointVector neighbours = this->getNeighbours(_xCF);
@@ -100,6 +93,8 @@ BidirectionalAStar::PointSetPair BidirectionalAStar::searching()
 
         _closed_backward.insert(_xCB);
 
+        _plot.plot_animation_bidirectional_astar("Bidirectional A*", _closed_backward, _path, false);
+
         neighbours = this->getNeighbours(_xCB);
         for(auto s_next : neighbours)
         {
@@ -130,14 +125,14 @@ BidirectionalAStar::PointSetPair BidirectionalAStar::searching()
     std::cout << "Number of visited nodes in the backward set: ";
     std::cout << _closed_backward.size() << std::endl;
 
-    // Plot visited points and path.
-    _plot.plot_visited(_closed_forward, _plot.colorListV()[0]);
-    _plot.plot_visited(_closed_backward, _plot.colorListV()[1]);
-    _plot.plot_path(this->extractPath());
-    _plot.show_image();
-    cv::waitKey(0);
-    
     pathVisitedPair.first = this->extractPath();
+
+    // Plot visited points and path.
+    _plot.plot_animation_bidirectional_astar("Bidirectional A*", _closed_forward, _path, true);
+    _plot.plot_animation_bidirectional_astar("Bidirectional A*", _closed_backward, _path, false);
+    
+    
+    
 
     BidirectionalAStar::PointSet closed;
     closed.insert(_closed_forward.begin(), _closed_forward.end());
@@ -176,20 +171,17 @@ double BidirectionalAStar::fValueBackward(Point &s)
     double f = _g_backward[s] + this->heuristic(s, _xI);
     return f;
 }
-
-BidirectionalAStar::PointSet BidirectionalAStar::extractPath()
+BidirectionalAStar::PointVector BidirectionalAStar::extractPath()
 {
     // Extract the path from the forward search.
-    BidirectionalAStar::PointSet path_forward;
-    path_forward.insert(_xM);
+    _path_forward.push_back(_xM);
     
     BidirectionalAStar::Point s = _xM;
 
     while (true)
     {
-        // std::cout << "s: " << s.first << ", " << s.second << std::endl;
         s = _parent_forward[s];
-        path_forward.insert(s);
+        _path_forward.push_back(s);
         if (s == _xI)
         {
             break;
@@ -197,32 +189,36 @@ BidirectionalAStar::PointSet BidirectionalAStar::extractPath()
     }
 
     // Extract the path from the backward search. 
-    BidirectionalAStar::PointSet path_backward;
     s = _xM;
 
     while (true)
     {
-        // std::cout << "s: " << s.first << ", " << s.second << std::endl;
         s = _parent_backward[s];
-        path_backward.insert(s);
+        _path_backward.push_back(s);
         if (s == _xG)
         {
             break;
         }
     }
 
+    // Reverse the path from the backward search.
+    std::reverse(_path_backward.begin(), _path_backward.end());
+
     // Combine the two paths.
-    BidirectionalAStar::PointSet path;
-    path.insert(path_forward.begin(), path_forward.end());
-    path.insert(path_backward.begin(), path_backward.end());
+    BidirectionalAStar::PointVector path;
+    path.insert(path.end(), _path_forward.begin(), _path_forward.end());
+    path.insert(path.begin(), _path_backward.begin(), _path_backward.end());
+
+    _path = path;
 
     return path;
 }
+
 
 
 void BidirectionalAStar::displayPlots()
 {
     _plot.plot_visited(_closed_forward, _plot.colorListV()[0]);
     _plot.plot_visited(_closed_backward, _plot.colorListV()[1]);
-    _plot.show_image();
+    _plot.show_image("Bidirectional A*");
 }

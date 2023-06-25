@@ -26,6 +26,8 @@ class AStar {
         typedef std::unordered_set<Point> UnorderedPointSet;
         typedef std::pair<PointVector, PointVector> PointVectorPair;
         typedef std::pair<PointSet, PointSet> PointSetPair;
+        typedef std::pair<PointVector, PointSet> PointVectorPointSetPair;
+
 
         static constexpr double INF = std::numeric_limits<double>::infinity();
 
@@ -46,9 +48,9 @@ class AStar {
          * 
          * This function runs the A* algorithm and returns the path and visited nodes.
          * 
-         * @return pathVisitedPair: The path and visited nodes.
+         * @return PointVectorPointSetPair: The path and visited nodes.
          */
-        PointSetPair searching();
+        PointVectorPointSetPair searching();
 
         /**
          * @brief 
@@ -58,9 +60,9 @@ class AStar {
          * This function runs the A* algorithm with repeated forward and backward search and returns the path and visited nodes.
          * 
          * @param e: The weight of A* algorithm.
-         * @return pathVisitedPair: The path and visited nodes.
+         * @return PointVectorPointSetPair: The path and visited nodes.
          */
-        PointSetPair searchingRepeatedAStar(double &e);
+        PointVectorPointSetPair searchingRepeatedAStar(double &e);
 
         /**
          * @brief Run the A* algorithm with repeated forward and backward search
@@ -70,9 +72,9 @@ class AStar {
          * @param xI: The start point.
          * @param xG: The goal point.
          * @param e: The weight of A* algorithm.
-         * @return pathVisitedPair: The path and visited nodes.
+         * @return PointVectorPointSetPair: The path and visited nodes.
          */
-        PointSetPair repeatedSearching(AStar::Point &xI, AStar::Point &xG, double &e);
+        PointVectorPointSetPair repeatedSearching(AStar::Point &xI, AStar::Point &xG, double &e);
 
         /**
          * @brief Get Neighbours of a point
@@ -125,7 +127,7 @@ class AStar {
          * @param parent: The parent dictionary
          * @return path: The path 
          */
-        PointSet extractPath(std::map<Point, Point> &parent);
+        PointVector extractPath(std::map<Point, Point> &parent);
 
         /**
          * @brief Get the heuristic value of a point
@@ -150,8 +152,8 @@ class AStar {
         Point _xG; // goal point
         Point _xC; // current point
 
-        PointVector _path; // list of path points
         PointVector _uSet; // list of motions
+        PointVector _path; // list of nodes in the path
 
         // These could ideally be unordered sets, to speed up lookup, but pairs are not hashable by default in C++.
         // This does not create problems with sets because set in C++ is implemented as a binary search tree and not a hash table.

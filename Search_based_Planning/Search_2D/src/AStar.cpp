@@ -21,9 +21,9 @@ AStar::AStar(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic
 
 }
 
-AStar::PointSetPair AStar::searching()
+AStar::PointVectorPointSetPair AStar::searching()
 {
-    AStar::PointSetPair pathVisitedPair;
+    AStar::PointVectorPointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
     _g[_xG] = AStar::INF;
@@ -33,7 +33,6 @@ AStar::PointSetPair AStar::searching()
 
     _open.emplace(this->fValue(_xI), _xI);
 
-    int count = 0;
 
     while(!_open.empty())
     {
@@ -42,15 +41,7 @@ AStar::PointSetPair AStar::searching()
         _open.pop();
         _closed.insert(s);
         
-        
-        if (count % 25 == 0)
-        {
-            // Plot visited points and path.
-            this->displayPlots();
-            cv::waitKey(25); // Pause for a short time
-        }
-
-        count++;
+        _plot.plot_animation("A*", _closed, _path);
 
         if(s == _xG)
         {           
@@ -76,35 +67,30 @@ AStar::PointSetPair AStar::searching()
     }
 
     // Plot visited points and path.
-    _plot.plot_visited(_closed);
-    _plot.plot_path(this->extractPath(_parent));
-    _plot.show_image();
-    cv::waitKey(0);
+    _path = this->extractPath(_parent);
+    _plot.plot_animation("A*", _closed, _path);
     
-    pathVisitedPair.first = this->extractPath(_parent);
+    pathVisitedPair.first = _path;
     pathVisitedPair.second = _closed;
     
     return pathVisitedPair;
 }
 
-AStar::PointSetPair AStar::searchingRepeatedAStar(double &e)
+AStar::PointVectorPointSetPair AStar::searchingRepeatedAStar(double &e)
 {
-    AStar::PointSetPair pathVisitedPair;
+    AStar::PointVectorPointSetPair pathVisitedPair;
     
-    AStar::PointSet path;
+    AStar::PointVector path;
     AStar::PointSet closed;
 
     while (e >= 1.0)
     {
         pathVisitedPair = this->repeatedSearching(_xI, _xG, e);
-        path.insert(pathVisitedPair.first.begin(), pathVisitedPair.first.end());
+        path = pathVisitedPair.first;
         closed.insert(pathVisitedPair.second.begin(), pathVisitedPair.second.end());
         e -= 0.5;
         _repeatedCount += 1;
     }
-
-    _plot.show_image();
-    cv::waitKey(0);
     
     pathVisitedPair.first = path;
     pathVisitedPair.second = closed;
@@ -113,9 +99,9 @@ AStar::PointSetPair AStar::searchingRepeatedAStar(double &e)
     return pathVisitedPair;
 }
 
-AStar::PointSetPair AStar::repeatedSearching(AStar::Point &xI, AStar::Point &xG, double &e)
+AStar::PointVectorPointSetPair AStar::repeatedSearching(AStar::Point &xI, AStar::Point &xG, double &e)
 {
-    AStar::PointSetPair pathVisitedPair;
+    AStar::PointVectorPointSetPair pathVisitedPair;
 
     std::map<Point, Point> parent;
     parent[xI] = xI;
@@ -134,7 +120,6 @@ AStar::PointSetPair AStar::repeatedSearching(AStar::Point &xI, AStar::Point &xG,
 
     PointSet closed; // list of closed nodes
 
-    int count = 0;
 
     while(!open.empty())
     {
@@ -142,17 +127,8 @@ AStar::PointSetPair AStar::repeatedSearching(AStar::Point &xI, AStar::Point &xG,
         // _xC = s;
         open.pop();
         closed.insert(s);
-        
-        
-        if (count % 25 == 0)
-        {
-            // Plot visited points and path.
-            _plot.plot_visited(_closed, Plotting::colorListV()[_repeatedCount]);
-            _plot.show_image();
-            cv::waitKey(25); // Pause for a short time
-        }
-
-        count++;
+         
+        _plot.plot_animation_repeated_astar("Repeated A*", closed, _path, _repeatedCount, (e == 1.0));
 
         if(s == xG)
         {           
@@ -177,13 +153,11 @@ AStar::PointSetPair AStar::repeatedSearching(AStar::Point &xI, AStar::Point &xG,
             }
         }
     }
-
     // Plot visited points and path.
-    _plot.plot_visited(closed, Plotting::colorListV()[_repeatedCount]);
-    _plot.plot_path(this->extractPath(parent), Plotting::colorListP()[_repeatedCount]);
-    
     pathVisitedPair.first = this->extractPath(parent);
     pathVisitedPair.second = closed;
+
+    _plot.plot_animation_repeated_astar("Repeated A*", closed, pathVisitedPair.first, _repeatedCount, (e == 1.0));
     
     return pathVisitedPair;
 }
@@ -259,17 +233,17 @@ double AStar::fValue(AStar::Point &s)
     return _g[s] + this->heuristic(s);
 }
 
-AStar::PointSet AStar::extractPath(std::map<Point, Point> &parent)
+AStar::PointVector AStar::extractPath(std::map<Point, Point> &parent)
 {
-    AStar::PointSet path;
+    AStar::PointVector path;
     
     Point s = _xG;
-    path.insert(s);
+    path.push_back(s);
     while (s != _xI)
     {
         // std::cout << "s: " << s.first << ", " << s.second << std::endl;
         s = parent[s];
-        path.insert(s);
+        path.push_back(s);
     }
 
     return path;
@@ -296,5 +270,5 @@ double AStar::heuristic(AStar::Point &s)
 void AStar::displayPlots()
 {
     _plot.plot_visited(_closed);
-    _plot.show_image();
+    _plot.show_image("A*");
 }

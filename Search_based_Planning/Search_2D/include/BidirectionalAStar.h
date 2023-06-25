@@ -45,7 +45,7 @@ class BidirectionalAStar: public AStar
          * 
          * @return pathVisitedPair: The path and visited nodes.
          */
-        PointSetPair searching();
+        PointVectorPointSetPair searching();
         /**
          * @brief Get the heuristic value of a point to the goal
          * 
@@ -87,7 +87,7 @@ class BidirectionalAStar: public AStar
          * 
          * @return path: The path 
          */
-        PointSet extractPath();
+        PointVector extractPath();
 
         /**
          * @brief Display the plots
@@ -105,6 +105,8 @@ class BidirectionalAStar: public AStar
         Point _xM;  // Meeting point
 
         PointVector _path; // list of path points
+        PointVector _path_forward; // list of path points from forward search
+        PointVector _path_backward; // list of path points from backward search
 
         // These could ideally be unordered sets, to speed up lookup, but pairs are not hashable by default in C++.
         // This does not create problems with sets because set in C++ is implemented as a binary search tree and not a hash table.

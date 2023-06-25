@@ -37,7 +37,7 @@ class BestFirst: public AStar
          * 
          * @return pathVisitedPair: The path and visited nodes.
          */
-        PointSetPair searching();
+        PointVectorPointSetPair searching();
 
 
 

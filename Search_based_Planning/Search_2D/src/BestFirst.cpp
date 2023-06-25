@@ -13,9 +13,9 @@
 #include <math.h>
 
 
-BestFirst::PointSetPair BestFirst::searching()
+BestFirst::PointVectorPointSetPair BestFirst::searching()
 {
-    BestFirst::PointSetPair pathVisitedPair;
+    BestFirst::PointVectorPointSetPair pathVisitedPair;
     _parent[_xI] = _xI;
     _g[_xI] = 0.0;
     _g[_xG] = BestFirst::INF;
@@ -25,8 +25,6 @@ BestFirst::PointSetPair BestFirst::searching()
 
     _open.emplace(0, _xI);
 
-    int count = 0;
-
     while(!_open.empty())
     {
         BestFirst::Point s = _open.top().second;
@@ -34,15 +32,7 @@ BestFirst::PointSetPair BestFirst::searching()
         _open.pop();
         _closed.insert(s);
         
-        
-        if (count % 25 == 0)
-        {
-            // Plot visited points and path.
-            this->displayPlots();
-            cv::waitKey(25); // Pause for a short time
-        }
-
-        count++;
+        _plot.plot_animation("Best-First Search", _closed, _path);
 
         if(s == _xG)
         {           
@@ -66,15 +56,13 @@ BestFirst::PointSetPair BestFirst::searching()
             }
         }
     }
+    
+    _path = this->extractPath(_parent);
+    pathVisitedPair.first = _path;
+    pathVisitedPair.second = _closed;
 
     // Plot visited points and path.
-    _plot.plot_visited(_closed);
-    _plot.plot_path(this->extractPath(_parent));
-    _plot.show_image();
-    cv::waitKey(0);
-    
-    pathVisitedPair.first = this->extractPath(_parent);
-    pathVisitedPair.second = _closed;
+    _plot.plot_animation("Best-First Search", _closed, _path);
     
     return pathVisitedPair;
 }

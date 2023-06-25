@@ -16,7 +16,6 @@ set(SOURCES
     ${SOURCE_DIR}/main.cpp
     ${SOURCE_DIR}/Env.cpp
     ${SOURCE_DIR}/Plotting.cpp
-    ${SOURCE_DIR}/Dummy.cpp
     ${SOURCE_DIR}/AStar.cpp
     ${SOURCE_DIR}/BFS.cpp
     ${SOURCE_DIR}/DFS.cpp
