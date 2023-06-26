@@ -22,6 +22,7 @@ set(SOURCES
     ${SOURCE_DIR}/Dijkstra.cpp
     ${SOURCE_DIR}/BestFirst.cpp
     ${SOURCE_DIR}/BidirectionalAStar.cpp
+    ${SOURCE_DIR}/ARAStar.cpp
     )
 
 # Include header files

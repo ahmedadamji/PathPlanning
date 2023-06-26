@@ -123,6 +123,33 @@ PathPlanning/fast:
 	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/build
 .PHONY : PathPlanning/fast
 
+src/ARAStar.o: src/ARAStar.cpp.o
+
+.PHONY : src/ARAStar.o
+
+# target to build an object file
+src/ARAStar.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/ARAStar.cpp.o
+.PHONY : src/ARAStar.cpp.o
+
+src/ARAStar.i: src/ARAStar.cpp.i
+
+.PHONY : src/ARAStar.i
+
+# target to preprocess a source file
+src/ARAStar.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/ARAStar.cpp.i
+.PHONY : src/ARAStar.cpp.i
+
+src/ARAStar.s: src/ARAStar.cpp.s
+
+.PHONY : src/ARAStar.s
+
+# target to generate assembly for a file
+src/ARAStar.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/ARAStar.cpp.s
+.PHONY : src/ARAStar.cpp.s
+
 src/AStar.o: src/AStar.cpp.o
 
 .PHONY : src/AStar.o
@@ -375,6 +402,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... PathPlanning"
+	@echo "... src/ARAStar.o"
+	@echo "... src/ARAStar.i"
+	@echo "... src/ARAStar.s"
 	@echo "... src/AStar.o"
 	@echo "... src/AStar.i"
 	@echo "... src/AStar.s"

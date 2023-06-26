@@ -266,9 +266,3 @@ double AStar::heuristic(AStar::Point &s)
         return std::sqrt(std::pow(s.first - _xG.first, 2) + std::pow(s.second - _xG.second, 2));
     }
 }
-
-void AStar::displayPlots()
-{
-    _plot.plot_visited(_closed);
-    _plot.show_image("A*");
-}

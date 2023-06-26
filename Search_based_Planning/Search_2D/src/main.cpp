@@ -1,12 +1,12 @@
 #include "Plotting.h"
 #include "Env.h"
-#include "Dummy.h"
 #include "AStar.h"
 #include "BFS.h"
 #include "DFS.h"
 #include "Dijkstra.h"
 #include "BestFirst.h"
 #include "BidirectionalAStar.h"
+#include "ARAStar.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -28,10 +28,6 @@ int main()
 
     // Plot grid.
     plot.plot_grid();
-    
-    // // Initialize and run the Dummy algorithm.
-    // Dummy dummy;
-    // dummy.run(env, plot);
 
     // // Initialize and run the A* algorithm.
     // // AStar astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
@@ -58,16 +54,22 @@ int main()
     // BestFirst bestfirst(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // BestFirst::PointVectorPointSetPair pathVisitedPair = bestfirst.searching();
 
-    // Initialize and run the BidirectionalAStar algorithm.
-    // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    BidirectionalAStar::PointVectorPointSetPair pathVisitedPair = bidirectional_astar.searching();
+    // // Initialize and run the BidirectionalAStar algorithm.
+    // // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // BidirectionalAStar bidirectional_astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // BidirectionalAStar::PointVectorPointSetPair pathVisitedPair = bidirectional_astar.searching();
 
     // // Initialize and run the Repeated A* algorithm.
     // // AStar astar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // AStar astar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // double e = 2.5;
     // AStar::PointVectorPointSetPair pathVisitedPair = astar.searchingRepeatedAStar(e);
+
+    // Initialize and run the Anytime Repairing A* algorithm.
+    // ARAStar arastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    ARAStar arastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    double e = 2.5;
+    ARAStar::PointVectorPointSetPair pathVisitedPair = arastar.searching(e);
 
     return 0;
 }

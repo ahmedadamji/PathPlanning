@@ -20,7 +20,7 @@ class BidirectionalAStar: public AStar
 {
     public:
         /**
-         * @brief Construct a new AStar object 
+         * @brief Construct a new BidirectionalAStar object 
          * 
          * @param env 
          * @param plot 
@@ -88,14 +88,6 @@ class BidirectionalAStar: public AStar
          * @return path: The path 
          */
         PointVector extractPath();
-
-        /**
-         * @brief Display the plots
-         * 
-         * This function displays the plots.
-         * 
-         */
-        void displayPlots();
 
 
     private:

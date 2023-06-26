@@ -213,12 +213,3 @@ BidirectionalAStar::PointVector BidirectionalAStar::extractPath()
 
     return path;
 }
-
-
-
-void BidirectionalAStar::displayPlots()
-{
-    _plot.plot_visited(_closed_forward, _plot.colorListV()[0]);
-    _plot.plot_visited(_closed_backward, _plot.colorListV()[1]);
-    _plot.show_image("Bidirectional A*");
-}

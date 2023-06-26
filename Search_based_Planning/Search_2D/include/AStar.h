@@ -138,14 +138,6 @@ class AStar {
          * @return h: The heuristic value of the point
          */
         double heuristic(Point &s);
-        
-        /**
-         * @brief Display the plots
-         * 
-         * This function displays the plots.
-         * 
-         */
-        void displayPlots();
 
 
         Point _xI; // start point
