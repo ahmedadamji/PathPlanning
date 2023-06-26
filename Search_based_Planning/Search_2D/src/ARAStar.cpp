@@ -110,6 +110,8 @@ ARAStar::PointVectorPointSetPair ARAStar::improvePath()
         // of those nodes have an f-value greater than the current path to
         // the goal. Therefore, it is logical to stop the search and declare
         // the current path to the goal as the best one found.
+
+        // Note that the incons set is already merged into the open set at this point.
         if (f_small >= this->fValue(_xG)) {
             break;
         }
@@ -143,6 +145,10 @@ ARAStar::PointVectorPointSetPair ARAStar::improvePath()
                 if (_closed.count(s_next) == 0) {
                     _open[s_next] = fValue(s_next);
                 } else {
+                    // ARA* maintains an incons list to handle inconsistent nodes.
+                    // Inconsistent nodes are nodes that have been expanded under a larger ε
+                    // and have a g-value less than the v-value
+                    // (estimate of the cost-to-come from start to the current node).
                     _incons[s_next] = 0.0;
                 }
 
