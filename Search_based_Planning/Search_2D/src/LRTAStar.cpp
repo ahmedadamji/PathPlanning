@@ -36,6 +36,14 @@ void LRTAStar::init(int N)
 
 LRTAStar::PointVectorPointSetPair LRTAStar::searching(int N)
 {
+    /*
+        The searching(int N) function is the main function that coordinates the others.
+        It first calls repeatedSearching to explore the nodes,
+        then it uses iteration to calculate and update the heuristic values.
+        Lastly, it calls extractPathInClose to construct the path
+        from the starting node to the node with an uncalculated heuristic value.
+        This process continues until the goal is found.
+    */
     LRTAStar::PointVectorPointSetPair pathVisitedPair;
 
     this->init(N);
@@ -68,6 +76,8 @@ LRTAStar::PointVectorPointSetPair LRTAStar::searching(int N)
 
 std::pair<LRTAStar::Point, LRTAStar::PointVector> LRTAStar::extractPathInClose(LRTAStar::Point &xS, std::map<Point, double> &h_value)
 {
+    // This function constructs a path from a given starting point xS to a node with an uncalculated heuristic value.
+    // It repeatedly chooses the neighbor with the smallest heuristic value and adds it to the path until it finds a node whose heuristic value hasn't been calculated.
 
     std::pair<LRTAStar::Point, LRTAStar::PointVector> startPathPair;
     
@@ -111,7 +121,21 @@ std::pair<LRTAStar::Point, LRTAStar::PointVector> LRTAStar::extractPathInClose(L
 
 std::map<LRTAStar::Point, double> LRTAStar::iteration(LRTAStar::PointSet &closed)
 {
-    
+    /* 
+    The 'iteration' function refines the heuristic values of the nodes in the closed set.
+    Initially, heuristic values are set to infinity as the exact cost to reach the goal from each node is unknown.
+    The function iterates until the heuristic values converge and stop changing significantly. 
+
+    In each iteration, for every node, it considers its neighbours and their associated costs.
+    It then updates the node's heuristic to be the minimum cost of moving to a neighbour plus the neighbour's heuristic. 
+
+    The purpose of this iterative refinement is to make the heuristic values as accurate as possible
+    based on the actual costs experienced while navigating the graph.
+    This allows the algorithm to adapt its pathfinding strategy in real-time,
+    making it particularly useful for scenarios where the graph is not fully known in advance.
+    */
+
+
     std::map<LRTAStar::Point, double> h_value;
 
     // This is done because we dont want to expand the visited nodes again preferably.
@@ -157,6 +181,12 @@ std::map<LRTAStar::Point, double> LRTAStar::iteration(LRTAStar::PointSet &closed
 
 LRTAStar::PointQueuePointSetPair LRTAStar::repeatedSearching(LRTAStar::Point &xI)
 {
+    // This function conducts a search from a given starting point (xI).
+    // It uses a priority queue (open) and a set of closed nodes (closed) to keep track of the nodes being explored.
+    // In each iteration, it pops out a node from the queue, checks if it's the goal node, expands its neighbors,
+    // and updates their cost if a better path is found.
+    // The function returns when the goal node is found or it has iterated N times.
+
     LRTAStar::PointQueuePointSetPair openClosedPair;
     
     LRTAStar::PointQueue open; // priority queue of open nodes
