@@ -339,6 +339,33 @@ src/Env.cpp.s:
 	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Env.cpp.s
 .PHONY : src/Env.cpp.s
 
+src/LRTAStar.o: src/LRTAStar.cpp.o
+
+.PHONY : src/LRTAStar.o
+
+# target to build an object file
+src/LRTAStar.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/LRTAStar.cpp.o
+.PHONY : src/LRTAStar.cpp.o
+
+src/LRTAStar.i: src/LRTAStar.cpp.i
+
+.PHONY : src/LRTAStar.i
+
+# target to preprocess a source file
+src/LRTAStar.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/LRTAStar.cpp.i
+.PHONY : src/LRTAStar.cpp.i
+
+src/LRTAStar.s: src/LRTAStar.cpp.s
+
+.PHONY : src/LRTAStar.s
+
+# target to generate assembly for a file
+src/LRTAStar.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/LRTAStar.cpp.s
+.PHONY : src/LRTAStar.cpp.s
+
 src/Plotting.o: src/Plotting.cpp.o
 
 .PHONY : src/Plotting.o
@@ -426,6 +453,9 @@ help:
 	@echo "... src/Env.o"
 	@echo "... src/Env.i"
 	@echo "... src/Env.s"
+	@echo "... src/LRTAStar.o"
+	@echo "... src/LRTAStar.i"
+	@echo "... src/LRTAStar.s"
 	@echo "... src/Plotting.o"
 	@echo "... src/Plotting.i"
 	@echo "... src/Plotting.s"

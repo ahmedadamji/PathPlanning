@@ -7,6 +7,7 @@
 #include "BestFirst.h"
 #include "BidirectionalAStar.h"
 #include "ARAStar.h"
+#include "LRTAStar.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -65,11 +66,19 @@ int main()
     // double e = 2.5;
     // AStar::PointVectorPointSetPair pathVisitedPair = astar.searchingRepeatedAStar(e);
 
-    // Initialize and run the Anytime Repairing A* algorithm.
-    // ARAStar arastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    ARAStar arastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    double e = 2.5;
-    ARAStar::PointVectorPointSetPair pathVisitedPair = arastar.searching(e);
+    // // Initialize and run the Anytime Repairing A* algorithm.
+    // // ARAStar arastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // ARAStar arastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // double e = 2.5;
+    // // As we can visualise, In this ARA* implementation, we avoid revisiting nodes that are consistent (i.e., their g-values match the cost of the shortest path found so far)
+    // // and have already been added to the closed set. This is one of the optimizations that make ARA* more efficient than standard A* in certain scenarios.
+    // ARAStar::PointVectorPointSetPair pathVisitedPair = arastar.searching(e);
+
+    // Initialize and run the Real Time A* algorithm.
+    // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    int N = 250; // The number of nodes to be expanded in each iteration.
+    LRTAStar::PointVectorPointSetPair pathVisitedPair = lrtastar.searching(N);
 
     return 0;
 }

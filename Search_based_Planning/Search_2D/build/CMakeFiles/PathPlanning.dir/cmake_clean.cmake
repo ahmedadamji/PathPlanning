@@ -7,6 +7,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/PathPlanning.dir/src/DFS.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/Dijkstra.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/Env.cpp.o"
+  "CMakeFiles/PathPlanning.dir/src/LRTAStar.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/Plotting.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/main.cpp.o"
   "PathPlanning"

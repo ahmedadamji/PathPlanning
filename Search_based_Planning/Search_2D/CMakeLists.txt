@@ -23,6 +23,7 @@ set(SOURCES
     ${SOURCE_DIR}/BestFirst.cpp
     ${SOURCE_DIR}/BidirectionalAStar.cpp
     ${SOURCE_DIR}/ARAStar.cpp
+    ${SOURCE_DIR}/LRTAStar.cpp
     )
 
 # Include header files

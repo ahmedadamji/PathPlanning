@@ -21,12 +21,14 @@ class AStar {
     public:
         // Define types.
         typedef std::pair<int, int> Point;
+        typedef std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > PointQueue;
         typedef std::vector<Point> PointVector;
         typedef std::set<Point> PointSet;
         typedef std::unordered_set<Point> UnorderedPointSet;
         typedef std::pair<PointVector, PointVector> PointVectorPair;
         typedef std::pair<PointSet, PointSet> PointSetPair;
         typedef std::pair<PointVector, PointSet> PointVectorPointSetPair;
+        typedef std::pair<PointQueue, PointSet> PointQueuePointSetPair;
 
 
         static constexpr double INF = std::numeric_limits<double>::infinity();
