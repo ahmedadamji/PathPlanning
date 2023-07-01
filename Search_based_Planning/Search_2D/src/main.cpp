@@ -75,16 +75,16 @@ int main()
     // // and have already been added to the closed set. This is one of the optimizations that make ARA* more efficient than standard A* in certain scenarios.
     // ARAStar::PointVectorPointSetPair pathVisitedPair = arastar.searching(e);
 
-    // // Initialize and run the Real Time A* algorithm.
-    // // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    // int N = 250; // The number of nodes to be expanded in each iteration.
-    // LRTAStar::PointVectorPointSetPair pathVisitedPair = lrtastar.searching(N);
+    // Initialize and run the Real Time A* algorithm.
+    // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    int N = 250; // The number of nodes to be expanded in each iteration.
+    LRTAStar::PointVectorPointSetPair pathVisitedPair = lrtastar.searching(N);
 
-    // Initialize and run the Real Time Adaptive A* algorithm.
-    // RTAAStar rtaastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    RTAAStar rtaastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    int N = 240; // The number of nodes to be expanded in each iteration.
-    RTAAStar::PointVectorPointSetPair pathVisitedPair = rtaastar.searching(N);
-    return 0;
+    // // Initialize and run the Real Time Adaptive A* algorithm.
+    // // RTAAStar rtaastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // RTAAStar rtaastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // int N = 240; // The number of nodes to be expanded in each iteration.
+    // RTAAStar::PointVectorPointSetPair pathVisitedPair = rtaastar.searching(N);
+    // return 0;
 }

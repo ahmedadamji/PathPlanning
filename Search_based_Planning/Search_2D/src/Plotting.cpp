@@ -190,7 +190,7 @@ std::vector<cv::Scalar> Plotting::colorListV()
     cl_v.push_back(cv::Scalar(225, 105, 65));  // royalblue
     cl_v.push_back(cv::Scalar(70, 130, 180));  // steelblue
     cl_v.push_back(cv::Scalar(255, 250, 205)); // lemonchiffon
-    cl_v.push_back(cv::Scalar(255, 255, 255)); // white
+    cl_v.push_back(cv::Scalar(245, 255, 255)); // honeydew
     cl_v.push_back(cv::Scalar(192, 192, 192)); // silver
     cl_v.push_back(cv::Scalar(250, 206, 235)); // lightskyblue
     cl_v.push_back(cv::Scalar(179, 222, 245)); // wheat

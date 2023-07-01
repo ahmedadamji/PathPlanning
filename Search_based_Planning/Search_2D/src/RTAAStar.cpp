@@ -57,7 +57,7 @@ RTAAStar::PointVectorPointSetPair RTAAStar::searching(int N)
 
         if (closed.find(_xG) != closed.end())
         {
-            _path.insert(_path.end(), closed.begin(), closed.end());
+            _path.insert(_path.end(), closedVector.begin(), closedVector.end());
             _plot.plot_animation_repeated_astar("Real-Time Adaptive A*", closed, _path, _repeatedCount, true);
             break;
         }
@@ -134,7 +134,6 @@ std::pair<RTAAStar::Point, RTAAStar::PointVector> RTAAStar::extractPathInClose(R
             startPathPair = std::make_pair(xN, path);
             _plot.plot_animation_repeated_astar("Real-Time Adaptive A*", closed, path, _repeatedCount, false);
             _xS = xN;
-            std::cout << "Returning path from extractPathInClose" << std::endl;
             return startPathPair;
         }
 
@@ -224,7 +223,6 @@ RTAAStar::PointQueuePointVectorPair RTAAStar::repeatedSearching(RTAAStar::Point 
         RTAAStar::Point s = open.top().second;
         _xC = s;
         open.pop();
-        closed.insert(s);
          
         _plot.plot_animation_repeated_astar("Real-Time Adaptive A*", closed, path, _repeatedCount, false);
 
@@ -244,6 +242,8 @@ RTAAStar::PointQueuePointVectorPair RTAAStar::repeatedSearching(RTAAStar::Point 
             return openClosedPair;
             
         }
+        
+        closed.insert(s);
 
         RTAAStar::PointVector neighbours = this->getNeighbours(s);
         for(auto s_next : neighbours)
@@ -289,11 +289,15 @@ RTAAStar::PointVector RTAAStar::extractPath(RTAAStar::Point &xS, std::map<RTAASt
     
     RTAAStar::Point s = _xG;
     path.push_back(s);
-    while (s != xS)
+    while (true)
     {
         // std::cout << "s: " << s.first << ", " << s.second << std::endl;
         s = parent[s];
         path.push_back(s);
+        if (s == xS)
+        {
+            break;
+        }
     }
 
     // Reverse the path to get the correct order.

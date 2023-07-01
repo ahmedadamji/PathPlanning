@@ -56,7 +56,7 @@ LRTAStar::PointVectorPointSetPair LRTAStar::searching(int N)
 
         if (closed.find(_xG) != closed.end())
         {
-            _path.insert(_path.end(), closed.begin(), closed.end());
+            _path.insert(_path.end(), closedVector.begin(), closedVector.end());
             _plot.plot_animation_repeated_astar("Learning Real-Time A*", closed, _path, _repeatedCount, true);
             break;
         }
@@ -221,7 +221,6 @@ LRTAStar::PointQueuePointVectorPair LRTAStar::repeatedSearching(LRTAStar::Point 
         LRTAStar::Point s = open.top().second;
         _xC = s;
         open.pop();
-        closed.insert(s);
          
         _plot.plot_animation_repeated_astar("Learning Real-Time A*", closed, path, _repeatedCount, false);
 
@@ -241,6 +240,9 @@ LRTAStar::PointQueuePointVectorPair LRTAStar::repeatedSearching(LRTAStar::Point 
             return openClosedPair;
             
         }
+        
+        // the node is marked closed after checking if it is the goal node because goal node is added by default in the extractPath function.
+        closed.insert(s);
 
         LRTAStar::PointVector neighbours = this->getNeighbours(s);
         for(auto s_next : neighbours)
@@ -288,12 +290,18 @@ LRTAStar::PointVector LRTAStar::extractPath(LRTAStar::Point &xS, std::map<LRTASt
     
     LRTAStar::Point s = _xG;
     path.push_back(s);
-    while (s != xS)
+    while (true)
     {
         // std::cout << "s: " << s.first << ", " << s.second << std::endl;
         s = parent[s];
         path.push_back(s);
+        if (s == xS)
+        {
+            break;
+        }
     }
+
+    std::reverse(path.begin(), path.end());
 
     return path;
 }
