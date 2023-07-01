@@ -1,5 +1,5 @@
-#ifndef LRTASTAR_H
-#define LRTASTAR_H
+#ifndef RTAASTAR_H
+#define RTAASTAR_H
 
 #include "Plotting.h"
 #include "Env.h"
@@ -18,7 +18,7 @@
 #include <math.h>
 
 
-class LRTAStar: public AStar
+class RTAAStar: public AStar
 {
     public:
 
@@ -26,7 +26,7 @@ class LRTAStar: public AStar
 
 
         /**
-         * @brief Construct a new LRTAStar object 
+         * @brief Construct a new RTAAStar object 
          * 
          * @param env 
          * @param plot 
@@ -34,21 +34,21 @@ class LRTAStar: public AStar
          * @param xG 
          * @param heuristic_type 
          */
-        LRTAStar(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
+        RTAAStar(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
 
         /**
-         * @brief Initialize the Anytime Repairing A* algorithm
+         * @brief Initialize the Anytime Repairing RTAA* algorithm
          * 
-         * This function initializes the parameters used in the Anytime Repairing A* algorithm.
+         * This function initializes the parameters used in the Anytime Repairing RTAA* algorithm.
          * 
          * @param N: The number of nodes to be expanded in each iteration.
          */
         void init(int N);
 
         /**
-         * @brief This is the main function of the Learning Real-Time A* algorithm
+         * @brief This is the main function of the Real-Time Adaptive RTAA* algorithm
          *
-         * This function runs the LRTA* algorithm and returns the path and visited nodes.
+         * This function runs the RTAA* algorithm and returns the path and visited nodes.
          * 
          * @param N: The number of nodes to be expanded in each iteration.
          * @return PointVectorPointSetPair: The path and visited nodes.
@@ -59,29 +59,31 @@ class LRTAStar: public AStar
          * @brief Extract the path from the closed set
          * 
          * @param xS: The start point of the current iteration
+         * @param xN: The next point of the current iteration
          * @param h_value: The h_value table for the current iteration
          * @return std::pair<Point, PointVector>: The start point and the path
          */
-        std::pair<Point, PointVector> extractPathInClose(LRTAStar::Point &xS, std::map<Point, double> &h_value);
+        std::pair<Point, PointVector> extractPathInClose(RTAAStar::Point &xS, RTAAStar::Point &xN, std::map<Point, double> &h_value);
 
         /**
-         * @brief Performs an iteration of the LRTA* algorithm
+         * @brief Computes the h_value table given the open and closed sets
          * 
+         * @param open set for the current iteration
          * @param closed set for the current iteration
-         * @return h_value table for the current iteration
+         * @return std::pair<Point, std::map<Point, double>>: The current point and the h_value table
          */
-        std::map<Point, double> iteration(LRTAStar::PointSet &closed);
+        std::pair<Point, std::map<Point, double>> computeHValue(RTAAStar::PointQueue &open, RTAAStar::PointSet &closed);
 
 
         /**
-         * @brief Run the LRTA* algorithm with repeated forward and backward search
+         * @brief Run the RTAA* algorithm with repeated forward and backward search
          * 
-         * This function runs the LRTA* algorithm with repeated forward and backward search and returns the path and visited nodes.
+         * This function runs the RTAA* algorithm with repeated forward and backward search and returns the path and visited nodes.
          * 
          * @param xI: The start point.
          * @return PointQueuePointVectorPair: The open and closed nodes.
          */
-        PointQueuePointVectorPair repeatedSearching(LRTAStar::Point &xI);
+        PointQueuePointVectorPair repeatedSearching(RTAAStar::Point &xI);
 
         /**
          * @brief Extract the path from the parent dictionary
@@ -103,6 +105,15 @@ class LRTAStar: public AStar
          */
         PointWithPriority calcSmallestH(std::map<Point, double> &h_value);
 
+        /**
+         * @brief Calculate the largest h value
+         * 
+         * This function calculates the largest h value.
+         * 
+         * @return PointWithPriority: The point with the largest h value.
+         */
+        PointWithPriority calcLargestH(std::map<Point, double> &h_value);
+
         
         private:
 
@@ -114,6 +125,10 @@ class LRTAStar: public AStar
 
             std::map<Point, double> _h_table;
 
+            std::map<Point, double> _g_table;
+
+            std::map<Point, Point> _parent;
+
             Point _xS; // The start point of the current iteration
 
 
@@ -121,4 +136,4 @@ class LRTAStar: public AStar
 
 };
 
-#endif  // LRTASTAR_H
+#endif  // RTAASTAR_H

@@ -28,6 +28,7 @@ class AStar {
         typedef std::pair<PointVector, PointVector> PointVectorPair;
         typedef std::pair<PointSet, PointSet> PointSetPair;
         typedef std::pair<PointVector, PointSet> PointVectorPointSetPair;
+        typedef std::pair<PointQueue, PointVector> PointQueuePointVectorPair;
         typedef std::pair<PointQueue, PointSet> PointQueuePointSetPair;
 
 

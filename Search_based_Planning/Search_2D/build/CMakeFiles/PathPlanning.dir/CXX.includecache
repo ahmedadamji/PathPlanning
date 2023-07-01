@@ -44,7 +44,15 @@ utility
 vector
 -
 
-../include/LRTAStar.h
+../include/Plotting.h
+opencv2/opencv.hpp
+-
+set
+-
+vector
+-
+
+../include/RTAAStar.h
 Plotting.h
 ../include/Plotting.h
 Env.h
@@ -76,17 +84,9 @@ algorithm
 math.h
 -
 
-../include/Plotting.h
-opencv2/opencv.hpp
--
-set
--
-vector
--
-
-/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/LRTAStar.cpp
-LRTAStar.h
-/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/LRTAStar.h
+/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/RTAAStar.cpp
+RTAAStar.h
+/home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/RTAAStar.h
 Plotting.h
 /home/ahmed/workspace/src/PathPlanning/Search_based_Planning/Search_2D/src/Plotting.h
 Env.h

@@ -9,6 +9,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/PathPlanning.dir/src/Env.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/LRTAStar.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/Plotting.cpp.o"
+  "CMakeFiles/PathPlanning.dir/src/RTAAStar.cpp.o"
   "CMakeFiles/PathPlanning.dir/src/main.cpp.o"
   "PathPlanning"
   "PathPlanning.pdb"

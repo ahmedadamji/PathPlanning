@@ -50,15 +50,17 @@ LRTAStar::PointVectorPointSetPair LRTAStar::searching(int N)
 
     while(true)
     {
-        LRTAStar::PointQueuePointSetPair currentOpenClosedPair = this->repeatedSearching(_xS);
-        LRTAStar::PointQueue open = currentOpenClosedPair.first;
-        LRTAStar::PointSet closed = currentOpenClosedPair.second;
+        LRTAStar::PointQueuePointVectorPair currentOpenClosedPair = this->repeatedSearching(_xS);
+        LRTAStar::PointVector closedVector = currentOpenClosedPair.second;
+        LRTAStar::PointSet closed(closedVector.begin(), closedVector.end());
+
         if (closed.find(_xG) != closed.end())
         {
-            pathVisitedPair.first.insert(pathVisitedPair.first.end(), closed.begin(), closed.end());
-            _plot.plot_animation_repeated_astar("Learning Real-Time A*", closed, pathVisitedPair.first, _repeatedCount, true);
+            _path.insert(_path.end(), closed.begin(), closed.end());
+            _plot.plot_animation_repeated_astar("Learning Real-Time A*", closed, _path, _repeatedCount, true);
             break;
         }
+        
         std::map<LRTAStar::Point, double> h_value = this->iteration(closed);
 
         for(auto& kv : h_value) {
@@ -67,9 +69,12 @@ LRTAStar::PointVectorPointSetPair LRTAStar::searching(int N)
 
         std::pair<LRTAStar::Point, LRTAStar::PointVector> startPathPair = this->extractPathInClose(_xS, h_value);
         _xS = startPathPair.first;
-        pathVisitedPair.first.insert(pathVisitedPair.first.end(), startPathPair.second.begin(), startPathPair.second.end());
+        _path.insert(_path.end(), startPathPair.second.begin(), startPathPair.second.end());
         _repeatedCount++;
     }
+
+    pathVisitedPair.first = _path;
+    pathVisitedPair.second = _closed;
 
     return pathVisitedPair;
 }
@@ -106,11 +111,13 @@ std::pair<LRTAStar::Point, LRTAStar::PointVector> LRTAStar::extractPathInClose(L
         LRTAStar::Point s_key = this->calcSmallestH(h_value_neighbours).first;
         path.push_back(s_key);
         s = s_key;
+        _xC = s;
 
         if (h_value.find(s) == h_value.end())
         {
             startPathPair = std::make_pair(s, path);
             _plot.plot_animation_repeated_astar("Learning Real-Time A*", closed, path, _repeatedCount, false);
+            _xS = _xC;
             return startPathPair;
         }
 
@@ -179,7 +186,7 @@ std::map<LRTAStar::Point, double> LRTAStar::iteration(LRTAStar::PointSet &closed
 
 }
 
-LRTAStar::PointQueuePointSetPair LRTAStar::repeatedSearching(LRTAStar::Point &xI)
+LRTAStar::PointQueuePointVectorPair LRTAStar::repeatedSearching(LRTAStar::Point &xI)
 {
     // This function conducts a search from a given starting point (xI).
     // It uses a priority queue (open) and a set of closed nodes (closed) to keep track of the nodes being explored.
@@ -187,7 +194,7 @@ LRTAStar::PointQueuePointSetPair LRTAStar::repeatedSearching(LRTAStar::Point &xI
     // and updates their cost if a better path is found.
     // The function returns when the goal node is found or it has iterated N times.
 
-    LRTAStar::PointQueuePointSetPair openClosedPair;
+    LRTAStar::PointQueuePointVectorPair openClosedPair;
     
     LRTAStar::PointQueue open; // priority queue of open nodes
 
@@ -212,7 +219,7 @@ LRTAStar::PointQueuePointSetPair LRTAStar::repeatedSearching(LRTAStar::Point &xI
     {
 
         LRTAStar::Point s = open.top().second;
-        // _xC = s;
+        _xC = s;
         open.pop();
         closed.insert(s);
          
@@ -225,9 +232,9 @@ LRTAStar::PointQueuePointSetPair LRTAStar::repeatedSearching(LRTAStar::Point &xI
             _closed.insert(closed.begin(), closed.end());   
             std::cout << "Goal found!" << std::endl;
             path = this->extractPath(xI, parent);
-            PointSet pathSet(path.begin(), path.end());
+            // PointSet pathSet(path.begin(), path.end());
             openClosedPair.first = open;
-            openClosedPair.second = pathSet;
+            openClosedPair.second = path;
 
             _plot.plot_animation_repeated_astar("Learning Real-Time A*", closed, path, _repeatedCount, false);
 
@@ -262,9 +269,12 @@ LRTAStar::PointQueuePointSetPair LRTAStar::repeatedSearching(LRTAStar::Point &xI
     }
     // Plot visited points and path.
     openClosedPair.first = open;
-    openClosedPair.second = closed;
+    PointVector closedVector(closed.begin(), closed.end());
+    openClosedPair.second = closedVector;
 
-    _closed.insert(closed.begin(), closed.end());   
+    _closed.insert(closed.begin(), closed.end());
+
+    // _xS = _xC;
 
     
     

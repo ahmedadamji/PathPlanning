@@ -73,14 +73,14 @@ std::set<std::pair<int, int>> Env::obs_map() {
         else {
             // Expand walls form random start to random goal
             for(int i = wI.second; i < wG.second; i++){
-                if ((this->xG == std::make_pair(i, wI.second)) || (this->xI == std::make_pair(i, wI.second)))
+                if ((this->xG == std::make_pair(wI.first, i)) || (this->xI == std::make_pair(wI.first, i)))
                 {
                     break;
                 }
                 obs.insert({wI.first, i});
             }
             for(int i = wI.first; i < wG.first; i++){
-                if ((this->xG == std::make_pair(wG.first, i)) || (this->xI == std::make_pair(wG.first, i)))
+                if ((this->xG == std::make_pair(i, wG.second)) || (this->xI == std::make_pair(i, wG.second)))
                 {
                     break;
                 }

@@ -24,6 +24,7 @@ set(SOURCES
     ${SOURCE_DIR}/BidirectionalAStar.cpp
     ${SOURCE_DIR}/ARAStar.cpp
     ${SOURCE_DIR}/LRTAStar.cpp
+    ${SOURCE_DIR}/RTAAStar.cpp
     )
 
 # Include header files

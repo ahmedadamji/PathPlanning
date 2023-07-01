@@ -185,21 +185,47 @@ void Plotting::plot_animation_bidirectional_astar(std::string windowName, std::s
 std::vector<cv::Scalar> Plotting::colorListV()
 {
     std::vector<cv::Scalar> cl_v;
-    cl_v.push_back(cv::Scalar(192, 192, 192)); // silver
-    cl_v.push_back(cv::Scalar(179, 222, 245)); // wheat
-    cl_v.push_back(cv::Scalar(250, 206, 235)); // lightskyblue
+    cl_v.push_back(cv::Scalar(255, 255, 0));   // yellow
+    cl_v.push_back(cv::Scalar(0, 255, 255));   // cyan
     cl_v.push_back(cv::Scalar(225, 105, 65));  // royalblue
+    cl_v.push_back(cv::Scalar(70, 130, 180));  // steelblue
+    cl_v.push_back(cv::Scalar(255, 250, 205)); // lemonchiffon
+    cl_v.push_back(cv::Scalar(255, 255, 255)); // white
+    cl_v.push_back(cv::Scalar(192, 192, 192)); // silver
+    cl_v.push_back(cv::Scalar(250, 206, 235)); // lightskyblue
+    cl_v.push_back(cv::Scalar(179, 222, 245)); // wheat
     cl_v.push_back(cv::Scalar(112, 128, 144)); // slategray
+    cl_v.push_back(cv::Scalar(240, 248, 255)); // aliceblue
+    cl_v.push_back(cv::Scalar(250, 240, 230)); // floralwhite
+    cl_v.push_back(cv::Scalar(245, 245, 220)); // beige
+    cl_v.push_back(cv::Scalar(248, 248, 255)); // ghostwhite
+    cl_v.push_back(cv::Scalar(255, 250, 240)); // ivory
+    cl_v.push_back(cv::Scalar(245, 255, 250)); // mintcream
     return cl_v;
 }
+
+
 
 std::vector<cv::Scalar> Plotting::colorListP()
 {
     std::vector<cv::Scalar> cl_p;
-    cl_p.push_back(cv::Scalar(128, 128, 128)); // gray
+    cl_p.push_back(cv::Scalar(0, 0, 0));       // black
+    cl_p.push_back(cv::Scalar(255, 0, 0));     // blue
+    cl_p.push_back(cv::Scalar(0, 0, 255));     // red
+    cl_p.push_back(cv::Scalar(0, 255, 0));     // green
     cl_p.push_back(cv::Scalar(0, 165, 255));   // orange
     cl_p.push_back(cv::Scalar(255, 191, 0));   // deepskyblue
-    cl_p.push_back(cv::Scalar(0, 0, 255));     // red
-    cl_p.push_back(cv::Scalar(255, 0, 255));   // m (magenta)
+    cl_p.push_back(cv::Scalar(128, 128, 128)); // gray
+    cl_p.push_back(cv::Scalar(255, 0, 255));   // magenta
+    cl_p.push_back(cv::Scalar(0, 255, 255));   // cyan
+    cl_p.push_back(cv::Scalar(105, 105, 105)); // dimgray
+    cl_p.push_back(cv::Scalar(25, 25, 112));   // midnightblue
+    cl_p.push_back(cv::Scalar(85, 107, 47));   // darkolivegreen
+    cl_p.push_back(cv::Scalar(139, 0, 0));     // darkred
+    cl_p.push_back(cv::Scalar(0, 100, 0));     // darkgreen
+    cl_p.push_back(cv::Scalar(139, 0, 139));   // darkmagenta
+    cl_p.push_back(cv::Scalar(0, 139, 139));   // darkcyan
+    cl_p.push_back(cv::Scalar(70, 130, 180));  // steelblue
     return cl_p;
 }
+

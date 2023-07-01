@@ -393,6 +393,33 @@ src/Plotting.cpp.s:
 	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/Plotting.cpp.s
 .PHONY : src/Plotting.cpp.s
 
+src/RTAAStar.o: src/RTAAStar.cpp.o
+
+.PHONY : src/RTAAStar.o
+
+# target to build an object file
+src/RTAAStar.cpp.o:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/RTAAStar.cpp.o
+.PHONY : src/RTAAStar.cpp.o
+
+src/RTAAStar.i: src/RTAAStar.cpp.i
+
+.PHONY : src/RTAAStar.i
+
+# target to preprocess a source file
+src/RTAAStar.cpp.i:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/RTAAStar.cpp.i
+.PHONY : src/RTAAStar.cpp.i
+
+src/RTAAStar.s: src/RTAAStar.cpp.s
+
+.PHONY : src/RTAAStar.s
+
+# target to generate assembly for a file
+src/RTAAStar.cpp.s:
+	$(MAKE) -f CMakeFiles/PathPlanning.dir/build.make CMakeFiles/PathPlanning.dir/src/RTAAStar.cpp.s
+.PHONY : src/RTAAStar.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -459,6 +486,9 @@ help:
 	@echo "... src/Plotting.o"
 	@echo "... src/Plotting.i"
 	@echo "... src/Plotting.s"
+	@echo "... src/RTAAStar.o"
+	@echo "... src/RTAAStar.i"
+	@echo "... src/RTAAStar.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
