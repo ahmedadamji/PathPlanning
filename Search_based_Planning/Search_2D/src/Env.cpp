@@ -103,4 +103,13 @@ std::set<std::pair<int, int>> Env::obs_map() {
     return obs;
 }
 
+// Function to add a new obstacle to the environment
+void Env::add_obs(std::pair<int, int> obs_point) {
+    this->obs.insert(obs_point);
+}
+
+// Function to remove an obstacle from the environment
+void Env::remove_obs(std::pair<int, int> obs_point) {
+    this->obs.erase(obs_point);
+}
 

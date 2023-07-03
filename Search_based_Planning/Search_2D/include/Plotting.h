@@ -4,20 +4,21 @@
 #include <opencv2/opencv.hpp>
 #include <set>
 #include <vector>
+#include <thread>
+#include <atomic>
+#include <termios.h>
+#include <unistd.h>
+#include "Env.h"
 
 class Plotting {
 public:
     /**
      * @brief Construct a new Plotting object
      * 
-     * @param x_range 
-     * @param y_range 
-     * @param xI 
-     * @param xG 
-     * @param obs 
+     * @param env
      * @param cell_size 
      */
-    Plotting(int x_range, int y_range, std::pair<int, int> xI, std::pair<int, int> xG, std::set<std::pair<int, int>> obs, int cell_size);
+    Plotting(Env &env, int cell_size);
     /**
      * @brief Update the obstacle set
      * 
@@ -114,11 +115,52 @@ public:
      */
     static std::vector<cv::Scalar> colorListP();
 
+    /**
+     * @brief Get the clicked point
+     * 
+     * @param event 
+     * @param x 
+     * @param y 
+     * @param userdata 
+     */
+    static void mouse_callback(int event, int x, int y, int, void* userdata);
+    
+    /**
+     * @brief Get the click coordinates object
+     * 
+     * @param windowName 
+     * @return cv::Point 
+     */
+    cv::Point get_click_coordinates(std::string windowName);
+    
+    /**
+     * @brief Check for input
+     * 
+     * This function checks for input from the user.
+     * 
+     */
+    void checkForInput();
+
     
     std::pair<int, int> xI, xG;
     std::set<std::pair<int, int>> obs;
     int cell_size;  // Size of each cell in pixels.
     cv::Mat image;
+    private:
+    cv::Point clicked_point; // to store clicked pixel's coordinates
+    Env _env;
+    bool firstClickDone = {};
+
+    std::vector<std::pair<int, int>> _path;
+
+    static std::atomic<bool> stopLoop;
+    
+    struct CallbackData {
+        Plotting* plotting;
+        std::string windowName;
+    };
+
+
 };
 
 #endif  // PLOTTING_H

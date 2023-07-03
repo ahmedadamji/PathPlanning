@@ -9,6 +9,7 @@
 #include "ARAStar.h"
 #include "LRTAStar.h"
 #include "RTAAStar.h"
+#include "DStar.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -23,7 +24,7 @@ int main()
     int cell_size = 15;
     
     // Initialize a Plotting object.
-    Plotting plot(env.x_range, env.y_range, env.get_xI(), env.get_xG(), env.get_obs(), cell_size);
+    Plotting plot(env, cell_size);
 
     // Update the obstacle set in the Plotting object.
     plot.update_obs(env.get_obs());
@@ -75,16 +76,24 @@ int main()
     // // and have already been added to the closed set. This is one of the optimizations that make ARA* more efficient than standard A* in certain scenarios.
     // ARAStar::PointVectorPointSetPair pathVisitedPair = arastar.searching(e);
 
-    // Initialize and run the Real Time A* algorithm.
-    // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    int N = 250; // The number of nodes to be expanded in each iteration.
-    LRTAStar::PointVectorPointSetPair pathVisitedPair = lrtastar.searching(N);
+    // // Initialize and run the Real Time A* algorithm.
+    // // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    // int N = 250; // The number of nodes to be expanded in each iteration.
+    // LRTAStar::PointVectorPointSetPair pathVisitedPair = lrtastar.searching(N);
 
     // // Initialize and run the Real Time Adaptive A* algorithm.
     // // RTAAStar rtaastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // RTAAStar rtaastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // int N = 240; // The number of nodes to be expanded in each iteration.
     // RTAAStar::PointVectorPointSetPair pathVisitedPair = rtaastar.searching(N);
-    // return 0;
+
+    // DStar dstar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    DStar dstar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    double e = 2.5;
+    // As we can visualise, In this ARA* implementation, we avoid revisiting nodes that are consistent (i.e., their g-values match the cost of the shortest path found so far)
+    // and have already been added to the closed set. This is one of the optimizations that make ARA* more efficient than standard A* in certain scenarios.
+    DStar::PointVectorPointSetPair pathVisitedPair = dstar.searching(e);
+
+    return 0;
 }

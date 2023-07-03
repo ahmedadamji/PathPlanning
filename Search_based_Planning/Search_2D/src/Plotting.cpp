@@ -2,23 +2,24 @@
 #include <opencv2/opencv.hpp>
 #include "Plotting.h"
 
-Plotting::Plotting(int x_range, int y_range, std::pair<int, int> xI, std::pair<int, int> xG, std::set<std::pair<int, int>> obs, int cell_size)
+Plotting::Plotting(Env &env, int cell_size): _env(env)
 {
-    this->xI = xI;
-    this->xG = xG;
+    this->xI = env.get_xI();
+    this->xG = env.get_xG();
     this->cell_size = cell_size;
-    this->obs = obs;
-    this->image = cv::Mat::zeros(x_range * cell_size, y_range * cell_size, CV_8UC3);
+    this->obs = env.get_obs();
+    this->image = cv::Mat::zeros(env.x_range * cell_size, env.y_range * cell_size, CV_8UC3);
+
 }
 
 void Plotting::update_obs(std::set<std::pair<int, int>> new_obs)
 {
-    obs = new_obs;
+    this->obs = new_obs;
 }
 
 void Plotting::plot_grid()
 {
-    for (auto const &obs_point : obs)
+    for (auto const &obs_point : this->obs)
     {
         // obs_point.first*cell_size and obs_point.second*cell_size are the top-left corner of the rectangle that is being drawn.
         // This is where the rectangle begins. Multiplying by cell_size scales the coordinates to the size of the cells in the grid.
@@ -69,6 +70,7 @@ void Plotting::plot_visited(std::set<std::pair<int, int>> visited, cv::Scalar co
 
 void Plotting::plot_path(std::vector<std::pair<int, int>> path)
 {
+     _path = path;
     std::reverse(path.begin(), path.end()); // Reverse the path
     std::pair<int, int> last_point = path[0];
     for (auto const &path_point : path)
@@ -84,6 +86,7 @@ void Plotting::plot_path(std::vector<std::pair<int, int>> path)
 
 void Plotting::plot_path(std::vector<std::pair<int, int>> path, cv::Scalar color)
 {
+    _path = path;
     std::reverse(path.begin(), path.end()); // Reverse the path
     std::pair<int, int> last_point = path[0];
     for (auto const &path_point : path)
@@ -111,16 +114,9 @@ void Plotting::plot_animation(std::string windowName, std::set<std::pair<int, in
 
     if (!path.empty())
     {
-        // for (const auto& path_step : path) {
-        //     if (path_step == xG) {
-        //         break;
-        //     }
-        //     this->plot_path({path_step});
-        //     this->show_image(windowName);
-        //     cv::waitKey(12);
-        // }
         this->plot_path(path);
         this->show_image(windowName);
+        // cv::Point click_coordinates = this->get_click_coordinates(windowName);
         cv::waitKey(0);
     }
     else
@@ -137,18 +133,11 @@ void Plotting::plot_animation_repeated_astar(std::string windowName, std::set<st
 
     if (!path.empty())
     {
-        // for (const auto& path_step : path) {
-        //     if (path_step == xG) {
-        //         break;
-        //     }
-        //     this->plot_path({path_step}, this->colorListP()[repeated_count]);
-        //     this->show_image(windowName);
-        //     cv::waitKey(12);
-        // }
         this->plot_path(path, this->colorListP()[repeated_count]);
         if (is_last)
         {
             this->show_image(windowName);
+            // cv::Point click_coordinates = this->get_click_coordinates(windowName);
             cv::waitKey(0);
         }
         else
@@ -229,3 +218,145 @@ std::vector<cv::Scalar> Plotting::colorListP()
     return cl_p;
 }
 
+
+void Plotting::mouse_callback(int event, int x, int y, int, void* userdata) {
+    CallbackData* data = static_cast<CallbackData*>(userdata);
+    Plotting* plotting = data->plotting;
+    std::string windowName = data->windowName;
+
+    // If the first click has already been processed, just return.
+    if (plotting->firstClickDone) {
+        return;
+    }
+
+    if (event == cv::EVENT_LBUTTONDOWN) {
+        // Convert the clicked point to the corresponding cell in the grid.
+        int cell_x = x / plotting->cell_size;
+        int cell_y = y / plotting->cell_size;
+        plotting->clicked_point = cv::Point(cell_x, cell_y);
+        std::cout << "Clicked cell: (" << cell_x << ", " << cell_y << ")" << std::endl;
+
+        // Set the flag to true after processing the first click.
+        plotting->firstClickDone = true;
+    }
+}
+
+cv::Point Plotting::get_click_coordinates(std::string windowName) {
+    cv::namedWindow(windowName, cv::WINDOW_NORMAL); // Create window with freedom of resizing
+
+    CallbackData data;
+    data.plotting = this;
+    data.windowName = windowName;
+
+    // Start a thread which listens to keyboard input
+    std::thread inputThread(&Plotting::checkForInput, this);
+
+    while (!this->stopLoop)
+    {
+        this->firstClickDone = false; // Reset the flag before starting the callback
+
+        cv::setMouseCallback(windowName, &Plotting::mouse_callback, &data);
+
+        while (!this->firstClickDone) {
+            cv::imshow(windowName, image);
+            cv::waitKey(1);
+
+            if (this->stopLoop) {
+                break;
+            }
+        }
+        
+        // Check if the clicked coordinates are part of the obstacle space.
+        std::pair<int, int> coordinates = std::make_pair(this->clicked_point.x, this->clicked_point.y);
+        if (this->_env.get_obs().count(coordinates) == 0)
+        {
+            // Check if the clicked coordinates are the start or end point.
+            if ((this->clicked_point.x == this->xI.first && this->clicked_point.y == this->xI.second) ||
+                (this->clicked_point.x == this->xG.first && this->clicked_point.y == this->xG.second))
+            {
+                std::cout << "Clicked point is the start or end point!" << std::endl;
+                continue;
+            }
+
+            // // Check if the clicked coordinates are part of the path.
+            // if (std::find(this->_path.begin(), this->_path.end(), coordinates) != this->_path.end())
+            // {
+            //     std::cout << "Clicked point is part of the path!" << std::endl;
+            //     continue;
+            // }
+
+
+            // If the clicked coordinates are not part of the obstacle space, then add them to the obstacle space.
+            this->_env.add_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
+
+            // Add the new obstacle to the Plotting object.
+            this->update_obs(this->_env.get_obs());
+
+            // Update the image based on the new obstacles.
+            this->show_image(windowName);
+
+            cv::waitKey(1); // Wait until a key is pressed
+
+            std::cout << "New obstacle added!" << std::endl;
+
+            // if (cv::waitKey(0) >= 0) {  // If a key is pressed, break from the loop
+            //     break;
+            // }
+        }
+        else
+        {
+            // If the clicked coordinates are part of the obstacle space, then remove them from the obstacle space and update the image.
+            this->_env.remove_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
+
+            // Remove the obstacle from the Plotting object.
+            this->update_obs(this->_env.get_obs());
+
+            // Erase the clicked point from the image.
+            cv::rectangle(image,
+                          cv::Point(this->clicked_point.x * cell_size, this->clicked_point.y * cell_size),
+                          cv::Point((this->clicked_point.x + 1) * cell_size - 2, (this->clicked_point.y + 1) * cell_size - 2),
+                          cv::Scalar(0, 0, 0),
+                          -1); // Obstacle color
+
+            // Update the image based on the new obstacles.
+            this->show_image(windowName);
+
+            cv::waitKey(1); // Wait until a key is pressed
+
+            std::cout << "Obstacle removed!" << std::endl;
+        }
+    }  
+    
+    // cv::imshow(windowName, image);
+    cv::waitKey(0); // Wait until a key is pressed
+
+    // Print the updated obstacle space size.
+    std::cout << "Obstacle space size: " << this->_env.get_obs().size() << std::endl;
+
+    inputThread.join(); // Make sure to join the thread
+    return this->clicked_point;  
+}
+
+std::atomic<bool> Plotting::stopLoop(false);
+
+void Plotting::checkForInput()
+{
+    // This code is used to check if a key has been pressed on the keyboard in UNIX based systems
+    
+    struct termios oldSettings, newSettings;
+    tcgetattr(STDIN_FILENO, &oldSettings);
+    newSettings = oldSettings;
+    newSettings.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newSettings);
+
+    char c;
+    while (!this->stopLoop) {
+        if (read(STDIN_FILENO, &c, 1) == 1) {
+            std::cout << "Input received: " << c << std::endl;
+            this->stopLoop = true;
+            break;
+        }
+    }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldSettings);
+}

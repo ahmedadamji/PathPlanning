@@ -19,6 +19,9 @@ public:
     std::vector<std::pair<int, int>> motions;
     std::set<std::pair<int, int>> obs;
     std::set<std::pair<int, int>> obs_map();
+
+    void add_obs(std::pair<int, int> obs_point);
+    void remove_obs(std::pair<int, int> obs_point);
 };
 
 #endif  // ENV_H

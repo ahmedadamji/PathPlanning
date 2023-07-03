@@ -11,6 +11,9 @@ set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 # Add the path to the directory containing Env.h and the source files
 set(SOURCES
     ${SOURCE_DIR}/main.cpp
@@ -25,6 +28,7 @@ set(SOURCES
     ${SOURCE_DIR}/ARAStar.cpp
     ${SOURCE_DIR}/LRTAStar.cpp
     ${SOURCE_DIR}/RTAAStar.cpp
+    ${SOURCE_DIR}/DStar.cpp
     )
 
 # Include header files
@@ -34,4 +38,4 @@ include_directories(${INCLUDE_DIR})
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link the OpenCV libraries
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads)
