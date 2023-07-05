@@ -88,12 +88,10 @@ int main()
     // int N = 240; // The number of nodes to be expanded in each iteration.
     // RTAAStar::PointVectorPointSetPair pathVisitedPair = rtaastar.searching(N);
 
+    // This is the D* Lite algorithm.
     // DStar dstar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     DStar dstar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    double e = 2.5;
-    // As we can visualise, In this ARA* implementation, we avoid revisiting nodes that are consistent (i.e., their g-values match the cost of the shortest path found so far)
-    // and have already been added to the closed set. This is one of the optimizations that make ARA* more efficient than standard A* in certain scenarios.
-    DStar::PointVectorPointSetPair pathVisitedPair = dstar.searching(e);
+    DStar::PointVectorPointSetPair pathVisitedPair = dstar.searching();
 
     return 0;
 }

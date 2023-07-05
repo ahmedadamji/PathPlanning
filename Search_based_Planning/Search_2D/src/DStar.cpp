@@ -12,224 +12,262 @@
 #include <algorithm>
 #include <stack>
 #include <math.h>
+#include <thread>
+#include <atomic>
 
 void DStar::init()
 {
-    _parent[_xI] = _xI;
-    _g[_xI] = 0.0;
-    _g[_xG] = DStar::INF;
+    // _parent[_xI] = _xI;
+    // _g[_xI] = 0.0;
+    // _g[_xG] = DStar::INF;
 
-    _open.emplace(_xI, this->fValue(_xI));
+    // _open.emplace(_xI, this->fValue(_xI));
+
+    // _xS = _xI;
+
+    for (int i = 0; i < _env.x_range; i++)
+    {
+        for (int j = 0; j < _env.y_range; j++)
+        {
+            DStar::Point s = std::make_pair(i, j);
+            // _t[s] = "NEW";
+            // _k[s] = 0.0;
+            // _h[s] = DStar::INF;
+            _rhs[s] = DStar::INF;
+            _g[s] = DStar::INF;
+
+        }
+    }
+
+    // _h[_xG] = 0.0;
+    _rhs[_xG] = 0.0;
+    _U[_xG] = this->calculateKey(_xG);
+    _closed.clear();
+    _open.clear();
+    _count = 0;
+
 }
 
-DStar::PointVectorPointSetPair DStar::searching(double &e)
+DStar::PointVectorPointSetPair DStar::searching()
 {
     DStar::PointVectorPointSetPair pathVisitedPair;
+    DStar::PointVector path;
+    DStar::PointSet closed;
+    
     _repeatedCount = 0;
 
     this->init();
-    _e = e;
 
-    DStar::PointVector path;
-    DStar::PointSet closed;
+    this->computePath();
+    path = this->extractPath();
+    pathVisitedPair = std::make_pair(path, _closed);
 
-    pathVisitedPair = this->improvePath();
-    path = pathVisitedPair.first;
-    closed = pathVisitedPair.second;
+    _plot.plot_animation_repeated_astar("D*", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
+            
+    // Start a thread which listens to keyboard input
+    std::thread inputThread(&DStar::checkForInput, this);
 
-    while (this->updateEpsilon() > 1.0)
+    while (!this->stopLoop)
     {
-        _e -= 0.4;
+        cv::Point click_coordinates = _plot.get_click_coordinates("D*");
+        _repeatedCount++;
 
+        this->_env.update_obs(_plot._env.get_obs());
 
-        // Add or replace nodes from _incons in _open
-        for (const auto& pair : _incons)
-        {
-            double newFValue = fValue(pair.first);
-            
-            // If 's' already exists in _open, remove it
-            if (_open.find(pair.first) != _open.end()) {
-                _open.erase(pair.first);
-            }
-            
-            // Add or replace 's' in _open
-            _open[pair.first] = newFValue;
-        }
+        // // Print the updated obstacle space size.
+        // std::cout << "Obstacle space size: " << this->_env.get_obs().size() << std::endl;
 
-        // Update fValues for all nodes in _open
-        for (auto& pair : _open) {
-            double newFValue = fValue(pair.first);
-            if (pair.second != newFValue) {
-                pair.second = newFValue;
-            }
-        }
+        // std::cout << "Click coordinate x: " << click_coordinates.x << std::endl;
+        // std::cout << "Click coordinate y: " << click_coordinates.y << std::endl;
 
-        // clear _incons
-        _incons.clear();
-        // clear _closed
-        _closed.clear();
+        this->computePath();
+        path = this->extractPath();
 
-        // Run improvePath() again
-        pathVisitedPair = this->improvePath();
-        path = pathVisitedPair.first;
-        closed = pathVisitedPair.second;
+        pathVisitedPair = std::make_pair(path, _closed);
+        
         _plot.plot_animation_repeated_astar("D*", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
-        if ((this->updateEpsilon() <= 1.0))
-        {
-            cv::Point click_coordinates = _plot.get_click_coordinates("D*");
-        }
 
-        _repeatedCount += 1;
     }
-
-
-
     
+    cv::waitKey(0); // Wait until a key is pressed
 
+    inputThread.join(); // Make sure to join the thread
+    
 
     return pathVisitedPair;
 }
 
-DStar::PointVectorPointSetPair DStar::improvePath()
+
+void DStar::computePath()
 {
     DStar::PointVectorPointSetPair pathVisitedPair;
     DStar::PointSet visited;
 
+    std::pair<DStar::Point, std::pair<double,double>> s_with_v;
+    std::pair<double,double> k_old;
+
     while(true)
     {
-        DStar::PointWithPriority s_with_smallest_f = this->calcSmallestF();
-        Point s = s_with_smallest_f.first;
-        double f_small = s_with_smallest_f.second;
+        // Finding the state with minimum key in _U (std::map<Point, std::pair<double,double>> _U;):
+        s_with_v = this->topKey();
 
-
-        // The condition "if self.f_value(self.s_goal) <= f_small:" checks
-        // if the current f-value of the goal node, s_goal, is less than
-        // or equal to the smallest f-value, f_small, among the nodes in
-        // the OPEN set.
-
-        // If the condition is true, it means that the algorithm has found
-        // a path to the goal that is as good as or better than any potential
-        // path it could explore in the future. This is because all future
-        // paths would have to pass through a node in the OPEN set, and all
-        // of those nodes have an f-value greater than the current path to
-        // the goal. Therefore, it is logical to stop the search and declare
-        // the current path to the goal as the best one found.
-
-        // Note that the incons set is already merged into the open set at this point.
-        if (f_small >= this->fValue(_xG)) {
+        // When you use the >= operator to compare two std::pair<double, double> objects,
+        // the comparison is performed lexicographically,
+        // meaning it first compares the first elements of the pairs.
+        // If the first elements are equal, it then compares the second elements.
+        // This condition tells us if the goal state has been reached because rhs and g values of the start state are consistent.
+        // and the cost of the shortest path from the start state to the goal is smaller than the cost from the top state in _U to the goal.
+        if (s_with_v.second >= this->calculateKey(_xI) && _rhs[_xI] == _g[_xI])
+        {
             break;
         }
 
-        _open.erase(s);
-        _closed.insert(s);
+        k_old = s_with_v.second;
+        // Remove the state with minimum key from _U.
+        _U.erase(s_with_v.first);
+        // Add the state with minimum key to _closed.
+        _closed.insert(s_with_v.first);
+
+        if (k_old < this->calculateKey(s_with_v.first))
+        {
+            // If the key of the state with minimum key is less than the new key of the state with minimum key,
+            // then update the key of the state with minimum key.
+            _U[s_with_v.first] = this->calculateKey(s_with_v.first);
+        }
+        else if (_g[s_with_v.first] > _rhs[s_with_v.first])
+        {
+            // If the g value of the state with minimum key is greater than the rhs value of the state with minimum key,
+            // then update the g value of the state with minimum key.
+            _g[s_with_v.first] = _rhs[s_with_v.first];
+            // Update the g value of the state with minimum key's neighbours.
+            DStar::PointVector neighbours = this->getNeighbours(s_with_v.first);
+            for(auto s_next : neighbours)
+            {
+                this->updateVertex(s_next);
+            }
+        }
+        else
+        {
+            // If the g value of the state with minimum key is less than or equal to the rhs value of the state with minimum key,
+            // then update the g value of the state with minimum key's neighbours.
+            _g[s_with_v.first] = DStar::INF;
+            DStar::PointVector neighbours = this->getNeighbours(s_with_v.first);
+            for(auto s_next : neighbours)
+            {
+                this->updateVertex(s_next);
+            }
+            this->updateVertex(s_with_v.first);
+        }
+
         
+    }
 
-        // if(s == _xG)
-        // {           
-        //     std::cout << "Goal found!" << std::endl; 
-        //     break;
-        // }
+}
 
+void DStar::updateVertex(Point s)
+{
+    // If s is not the goal state, then compute its rhs value.
+    // The rhs value of a state s is the smallest g-value of any state s' that is a successor of s plus the cost of moving from s to s'.
+    // The g-value of the goal state is 0 in this implementation.
+    // This can change due to new obstacles or changes in edge costs, causing g and rhs to become inconsistent.
+    if (s != _xG)
+    {
+        _rhs[s] = DStar::INF;
         PointVector neighbours = this->getNeighbours(s);
         for(auto s_next : neighbours)
         {
-            double new_cost = _g[s] + this->cost(s, s_next);
+            _rhs[s] = std::min(_rhs[s], _g[s_next] + this->cost(s, s_next));
+        }
+    }
+    
+    // If s is a key in _U, remove it.
+    // This is done because we want to update it only if the g value and rhs value of s are not equal.
+    // This is done in the following if condition.
+    // We need to do that because if the g value and rhs value of s are equal,
+    // then the g value of s is consistent with the rhs value of s.
+    if (_U.count(s) != 0) {
+        _U.erase(s);
+    }
 
-            // Insert is used as it does not overwrite the value if the key already exists.
-            auto result = _g.insert({s_next, DStar::INF});
+    // If the g-value and rhs-value of s are not equal, add the key of s to _U.
+    // This is because the g-value of s is not consistent with the rhs-value of s.
+    // This inconsistency is integral for D* Lite, as resolving it leads to an updated shortest path.
+    if (_g[s] != _rhs[s]) {
+        _U[s] = this->calculateKey(s);
+    }
+}
 
-            if(new_cost < _g[s_next])
+std::pair<double,double> DStar::calculateKey(Point s)
+{
+
+    std::pair<double,double> key;
+    // This is the minimum estimated cost of a path from the start node to the goal through this node.
+    // It's a combination of the cost from the goal to reach this node (the g value)
+    // and a heuristic estimate of the cost to reach the this node from the start (the heuristic from start to current state).
+    // This value is used to prioritize nodes that are estimated to be on a shorter path.
+    // _km is added to the heuristic in the key calculation to account for changes in the start position,
+    // ensuring that the priority queue remains sorted correctly.
+    key.first = std::min(_g[s], _rhs[s]) + this->heuristic(_xI, s) + _km;
+    // This value is used as a tie-breaker when two nodes have the same first key value.
+    // Its basically the cost to reach the goal from this node (the g value).
+    // The nodes that reach the goal with a lower cost are prioritized.
+    key.second = std::min(_g[s], _rhs[s]);
+    return key;
+}
+
+std::pair<DStar::Point, std::pair<double,double>> DStar::topKey()
+{
+    DStar::Point s;
+
+    // Here _U is of the form : std::map<Point, std::pair<double,double>>
+    // We are finding the state with minimum key in _U.
+    // The key for each state in _U is a pair of doubles.
+    // The first double is the minimum estimated cost of a path from the start node to the goal through this node.
+    // The second double is used as a tie-breaker when two nodes have the same first key value.
+    s = std::min_element(_U.begin(), _U.end(), [](const auto& a, const auto& b) {
+        if (a.second.first != b.second.first) { // compare first elements
+            return a.second.first < b.second.first;
+        } else { // in case of ties, compare second elements
+            return a.second.second < b.second.second;
+        }
+    })->first;
+
+    return std::make_pair(s, _U[s]);
+}
+
+
+DStar::PointVector DStar::extractPath()
+{
+    DStar::PointVector path;
+    
+    Point s = _xI;
+    path.push_back(s);
+
+    for (int k = 0; k < 100; k++)
+    {
+        std::map<Point, double> _g_neighbours;
+        PointVector neighbours = this->getNeighbours(s);
+        for(auto s_next : neighbours)
+        {
+            if(!this->isCollision(s, s_next))
             {
-                _g[s_next] = new_cost;
-                _parent[s_next] = s;
-
-                visited.insert(s_next);
-                _plot.plot_animation_repeated_astar("D*", visited, _path, _repeatedCount, false);
-                // if (_e == 1)
-                // {
-                //     cv::Point click_coordinates = _plot.get_click_coordinates("D*");
-                // }
-
-                if (_closed.count(s_next) == 0) {
-                    _open[s_next] = fValue(s_next);
-                } else {
-                    // D* maintains an incons list to handle inconsistent nodes.
-                    // Inconsistent nodes are nodes that have been expanded under a larger ε
-                    // and have a g-value less than the v-value
-                    // (estimate of the cost-to-come from start to the current node).
-                    _incons[s_next] = 0.0;
-                }
-
+                // The g_neighbours values are updated based on the values in _g.
+                _g_neighbours[s_next] = _g[s_next];
             }
         }
-    }
-    // Plot visited points and path.
-    pathVisitedPair.first = this->extractPath(_parent);
-    pathVisitedPair.second = visited;
-
-    // _plot.plot_animation_repeated_astar("D*", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, (_e == 1.0));
-    
-    return pathVisitedPair;
-}
-
-double DStar::updateEpsilon()
-{
-    // This function calculates the minimum
-    // value of the sum of the heuristic and g value for each state in
-    // the open and inconsistent lists. This minimum value is then used
-    // to update ε by taking the minimum of the current ε and the ratio
-    // of the g value at the goal state to the computed minimum.
-
-    // The update rule is based on the idea that the ratio of the g value
-    // at the goal state to the minimum value represents an estimate of
-    // the optimal cost. As the algorithm discovers shorter paths to the
-    // goal, this ratio decreases, resulting in a decrease in ε. A smaller
-    // ε brings the algorithm closer to the behavior of the ordinary D*
-    // algorithm, known for finding optimal paths.
-
-    // By iteratively reducing ε and re-running the search, the D*
-    // algorithm progressively refines its solution, approaching the
-    // optimal path as more computation time is allotted.
-
-    double v = DStar::INF;
-
-    // Iterate over the map _open
-    for (const auto& pair : _open) {
-        v = std::min(v, DStar::heuristic(pair.first) + _g[pair.first]);
-    }
-
-    for (const auto& pair : _incons) {
-        v = std::min(v, DStar::heuristic(pair.first) + _g[pair.first]);
-    }
-
-    return std::min(_e, (_g[_xG] / v));
-}
-
-
-DStar::PointWithPriority DStar::calcSmallestF()
-{
-    DStar::PointWithPriority s_with_smallest_f = *_open.begin();  // Start with the first pair in the map
-    
-    // Iterate over the map to find the pair with the smallest fValue
-    for (const auto& pair : _open) {
-        if (pair.second < s_with_smallest_f.second) {
-            s_with_smallest_f = pair;
+        // Finding the state with minimum cost in _g_neighbours:
+        s = std::min_element(_g_neighbours.begin(), _g_neighbours.end(), [](const auto& a, const auto& b) { return a.second < b.second; })->first;
+        path.push_back(s);
+        if (s == _xG)
+        {
+            break;
         }
     }
 
-    return s_with_smallest_f;  
-    
+    return path;
 }
 
-
-double DStar::fValue(const DStar::Point &s)
-{
-    return _g[s] + (_e * this->heuristic(s));
-}
-
-
-
-double DStar::heuristic(const DStar::Point &s)
+double DStar::heuristic(DStar::Point &s, DStar::Point &goal)
 {
     // D* uses a heuristic function to estimate the cost to reach the goal from a given node.
     // The quality of the heuristic greatly affects the efficiency of the D* search.
@@ -239,10 +277,35 @@ double DStar::heuristic(const DStar::Point &s)
     std::string heuristic_type = _heuristicType;
     if (heuristic_type == "manhattan")
     {
-        return std::abs(s.first - _xG.first) + std::abs(s.second - _xG.second);
+        return std::abs(s.first - goal.first) + std::abs(s.second - goal.second);
     }
     else
     {
-        return std::sqrt(std::pow(s.first - _xG.first, 2) + std::pow(s.second - _xG.second, 2));
+        return std::sqrt(std::pow(s.first - goal.first, 2) + std::pow(s.second - goal.second, 2));
     }
+}
+
+
+std::atomic<bool> DStar::stopLoop(false);
+
+void DStar::checkForInput()
+{
+    // This code is used to check if a key has been pressed on the keyboard in UNIX based systems
+
+    struct termios oldSettings, newSettings;
+    tcgetattr(STDIN_FILENO, &oldSettings);
+    newSettings = oldSettings;
+    newSettings.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newSettings);
+
+    char c;
+    while (!this->stopLoop) {
+        if (read(STDIN_FILENO, &c, 1) == 1) {
+            std::cout << "Input received: " << c << std::endl;
+            this->stopLoop = true;
+            break;
+        }
+    }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldSettings);
 }

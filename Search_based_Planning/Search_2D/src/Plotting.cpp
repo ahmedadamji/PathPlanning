@@ -248,43 +248,44 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
     data.plotting = this;
     data.windowName = windowName;
 
-    // Start a thread which listens to keyboard input
-    std::thread inputThread(&Plotting::checkForInput, this);
+    // // Start a thread which listens to keyboard input
+    // std::thread inputThread(&Plotting::checkForInput, this);
 
-    while (!this->stopLoop)
-    {
-        this->firstClickDone = false; // Reset the flag before starting the callback
+    // while (!this->stopLoop)
+    // {
+    this->firstClickDone = false; // Reset the flag before starting the callback
 
-        cv::setMouseCallback(windowName, &Plotting::mouse_callback, &data);
+    cv::setMouseCallback(windowName, &Plotting::mouse_callback, &data);
 
-        while (!this->firstClickDone) {
-            cv::imshow(windowName, image);
-            cv::waitKey(1);
+    while (!this->firstClickDone) {
+        cv::imshow(windowName, image);
+        cv::waitKey(1);
 
-            if (this->stopLoop) {
-                break;
-            }
+        if (this->stopLoop) {
+            break;
         }
-        
-        // Check if the clicked coordinates are part of the obstacle space.
-        std::pair<int, int> coordinates = std::make_pair(this->clicked_point.x, this->clicked_point.y);
-        if (this->_env.get_obs().count(coordinates) == 0)
+    }
+    
+    // Check if the clicked coordinates are part of the obstacle space.
+    std::pair<int, int> coordinates = std::make_pair(this->clicked_point.x, this->clicked_point.y);
+    if (this->_env.get_obs().count(coordinates) == 0)
+    {
+        // Check if the clicked coordinates are the start or end point.
+        if ((this->clicked_point.x == this->xI.first && this->clicked_point.y == this->xI.second) ||
+            (this->clicked_point.x == this->xG.first && this->clicked_point.y == this->xG.second))
         {
-            // Check if the clicked coordinates are the start or end point.
-            if ((this->clicked_point.x == this->xI.first && this->clicked_point.y == this->xI.second) ||
-                (this->clicked_point.x == this->xG.first && this->clicked_point.y == this->xG.second))
-            {
-                std::cout << "Clicked point is the start or end point!" << std::endl;
-                continue;
-            }
+            std::cout << "Clicked point is the start or end point!" << std::endl;
+            // continue;
+        }
 
-            // // Check if the clicked coordinates are part of the path.
-            // if (std::find(this->_path.begin(), this->_path.end(), coordinates) != this->_path.end())
-            // {
-            //     std::cout << "Clicked point is part of the path!" << std::endl;
-            //     continue;
-            // }
+        // // Check if the clicked coordinates are part of the path.
+        // if (std::find(this->_path.begin(), this->_path.end(), coordinates) != this->_path.end())
+        // {
+        //     std::cout << "Clicked point is part of the path!" << std::endl;
+        //     continue;
+        // }
 
+        else {
 
             // If the clicked coordinates are not part of the obstacle space, then add them to the obstacle space.
             this->_env.add_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
@@ -303,37 +304,37 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
             //     break;
             // }
         }
-        else
-        {
-            // If the clicked coordinates are part of the obstacle space, then remove them from the obstacle space and update the image.
-            this->_env.remove_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
+    }
+    else
+    {
+        // If the clicked coordinates are part of the obstacle space, then remove them from the obstacle space and update the image.
+        this->_env.remove_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
 
-            // Remove the obstacle from the Plotting object.
-            this->update_obs(this->_env.get_obs());
+        // Remove the obstacle from the Plotting object.
+        this->update_obs(this->_env.get_obs());
 
-            // Erase the clicked point from the image.
-            cv::rectangle(image,
-                          cv::Point(this->clicked_point.x * cell_size, this->clicked_point.y * cell_size),
-                          cv::Point((this->clicked_point.x + 1) * cell_size - 2, (this->clicked_point.y + 1) * cell_size - 2),
-                          cv::Scalar(0, 0, 0),
-                          -1); // Obstacle color
+        // Erase the clicked point from the image.
+        cv::rectangle(image,
+                        cv::Point(this->clicked_point.x * cell_size, this->clicked_point.y * cell_size),
+                        cv::Point((this->clicked_point.x + 1) * cell_size - 2, (this->clicked_point.y + 1) * cell_size - 2),
+                        cv::Scalar(0, 0, 0),
+                        -1); // Obstacle color
 
-            // Update the image based on the new obstacles.
-            this->show_image(windowName);
+        // Update the image based on the new obstacles.
+        this->show_image(windowName);
 
-            cv::waitKey(1); // Wait until a key is pressed
+        cv::waitKey(1); // Wait until a key is pressed
 
-            std::cout << "Obstacle removed!" << std::endl;
-        }
-    }  
+        std::cout << "Obstacle removed!" << std::endl;
+    }
+    // }  
     
     // cv::imshow(windowName, image);
-    cv::waitKey(0); // Wait until a key is pressed
 
-    // Print the updated obstacle space size.
-    std::cout << "Obstacle space size: " << this->_env.get_obs().size() << std::endl;
+    // // Print the updated obstacle space size.
+    // std::cout << "Obstacle space size: " << this->_env.get_obs().size() << std::endl;
 
-    inputThread.join(); // Make sure to join the thread
+    // inputThread.join(); // Make sure to join the thread
     return this->clicked_point;  
 }
 
@@ -342,7 +343,7 @@ std::atomic<bool> Plotting::stopLoop(false);
 void Plotting::checkForInput()
 {
     // This code is used to check if a key has been pressed on the keyboard in UNIX based systems
-    
+
     struct termios oldSettings, newSettings;
     tcgetattr(STDIN_FILENO, &oldSettings);
     newSettings = oldSettings;

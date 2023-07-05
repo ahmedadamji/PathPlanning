@@ -16,8 +16,13 @@
 #include <utility>
 #include <algorithm>
 #include <math.h>
+#include <thread>
+#include <atomic>
 
-
+/**
+ * @brief This is the D* Lite algorithm class
+ * 
+ */
 class DStar: public AStar
 {
     public:
@@ -49,71 +54,97 @@ class DStar: public AStar
          * 
          *
          * 
-         * This function runs the ARA* algorithm and returns the path and visited nodes.
+         * This function runs the D* algorithm and returns the path and visited nodes.
          * 
-         * @param e: The weight of ARA* algorithm.
+         * @param e: The weight of D* algorithm.
          * @return PointVectorPointSetPair: The path and visited nodes.
          */
-        PointVectorPointSetPair searching(double &e);
+        PointVectorPointSetPair searching();
 
         /**
-         * @brief Run the ARA* algorithm with repeated forward and backward search
+         * @brief This function computes the path for the D* algorithm.
          * 
-         * This function runs the ARA* algorithm with repeated forward and backward search and returns the path and visited nodes.
-         * 
-         * @return PointVectorPointSetPair: The path and visited nodes.
          */
-        PointVectorPointSetPair improvePath();
+        void computePath();
 
         /**
-         * @brief Update the epsilon value
+         * @brief This function updates the vertex.
          * 
-         * This function updates the epsilon value.
-         * 
-         * @return e: The updated epsilon value
+         * @param s 
          */
-        double updateEpsilon();
+        void updateVertex(Point s);
 
         /**
-         * @brief Calculate the smallest f value
+         * @brief This function calculates the key of the current state.
          * 
-         * This function calculates the smallest f value.
-         * 
-         * @return PointWithPriority: The point with the smallest f value.
+         * @param s 
+         * @return std::pair<double,double> The key of the current state.
          */
-        PointWithPriority calcSmallestF();
+        std::pair<double,double> calculateKey(Point s);
 
         /**
-         * @brief Get the f value of a point
+         * @brief This function returns the state with the smallest value in _U.
          * 
-         * This function returns the f value of a point, which is the sum of the g value and the heuristic value.
-         * f = g + h. (g: Cost to come, h: heuristic value)
-         * 
-         * @param s: The point
-         * @return f: The f value of the point
+         * @return std::pair<DStar::Point, std::pair<double,double>> The state with the smallest value in _U.
          */
-        double fValue(const Point &s);
+        std::pair<DStar::Point, std::pair<double,double>> topKey();
 
         /**
-         * @brief Get the heuristic value of a point
+         * @brief Extract the path
+         * 
+         * This function extracts the path by finding the state with the smallest g value for neighbors of each state until the goal state is reached.
+         * 
+         * @return path: The path 
+         */
+        PointVector extractPath();
+
+        /**
+         * @brief Get the heuristic value of a point to the goal
          * 
          * This function returns the heuristic value of a point.
          * 
          * @param s: The point
+         * @param goal: The goal point
          * @return h: The heuristic value of the point
          */
-        double heuristic(const Point &s);
+        double heuristic(Point &s, Point &goal);
+
+        /**
+         * @brief Check for input
+         * 
+         * This function checks for input from the user.
+         * 
+         */
+        void checkForInput();
         
         private:
 
             int _repeatedCount = 0;
 
             std::map<Point, double> _incons;
-            // std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > _open; // priority queue of open nodes
-            // This data structure is used here instead of priority_queue because it is easier to update the open set with the states in the incons set if there are the same states in the open set.
-            std::map<Point, double> _open;
+            // // std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > _open; // priority queue of open nodes
+            // // This data structure is used here instead of priority_queue because it is easier to update the open set with the states in the incons set if there are the same states in the open set.
+            // std::map<Point, double> _open;
 
-            double _e = 0.0;
+            // The open set is a set of points without priority.
+            std::set<Point> _open;
+
+            // std::map<Point, std::string> _t;
+            // std::map<Point, double> _h;
+            // std::map<Point, double> _k;
+            std::map<Point, double> _g;
+            std::map<Point, double> _rhs;
+            std::map<Point, std::pair<double,double>> _U;
+
+            Point _xS;
+
+            int _count = 0;
+
+            // This stands for "key modifier".
+            // It's a global counter that's incremented whenever the start node is moved.
+            double _km = 0.0;
+
+            static std::atomic<bool> stopLoop;
 
 
 

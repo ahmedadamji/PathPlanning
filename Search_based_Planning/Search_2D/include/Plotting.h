@@ -146,12 +146,15 @@ public:
     std::set<std::pair<int, int>> obs;
     int cell_size;  // Size of each cell in pixels.
     cv::Mat image;
-    private:
+
     cv::Point clicked_point; // to store clicked pixel's coordinates
     Env _env;
     bool firstClickDone = {};
 
     std::vector<std::pair<int, int>> _path;
+
+
+private:
 
     static std::atomic<bool> stopLoop;
     
