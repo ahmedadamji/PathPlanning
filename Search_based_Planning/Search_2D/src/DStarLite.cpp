@@ -1,4 +1,4 @@
-#include "DStar.h"
+#include "DStarLite.h"
 #include "Plotting.h"
 #include "Env.h"
 #include <iostream>
@@ -15,11 +15,11 @@
 #include <thread>
 #include <atomic>
 
-void DStar::init()
+void DStarLite::init()
 {
     // _parent[_xI] = _xI;
     // _g[_xI] = 0.0;
-    // _g[_xG] = DStar::INF;
+    // _g[_xG] = DStarLite::INF;
 
     // _open.emplace(_xI, this->fValue(_xI));
 
@@ -29,12 +29,12 @@ void DStar::init()
     {
         for (int j = 0; j < _env.y_range; j++)
         {
-            DStar::Point s = std::make_pair(i, j);
+            DStarLite::Point s = std::make_pair(i, j);
             // _t[s] = "NEW";
             // _k[s] = 0.0;
-            // _h[s] = DStar::INF;
-            _rhs[s] = DStar::INF;
-            _g[s] = DStar::INF;
+            // _h[s] = DStarLite::INF;
+            _rhs[s] = DStarLite::INF;
+            _g[s] = DStarLite::INF;
 
         }
     }
@@ -48,11 +48,11 @@ void DStar::init()
 
 }
 
-DStar::PointVectorPointSetPair DStar::searching()
+DStarLite::PointVectorPointSetPair DStarLite::searching()
 {
-    DStar::PointVectorPointSetPair pathVisitedPair;
-    DStar::PointVector path;
-    DStar::PointSet closed;
+    DStarLite::PointVectorPointSetPair pathVisitedPair;
+    DStarLite::PointVector path;
+    DStarLite::PointSet closed;
     
     _repeatedCount = 0;
 
@@ -62,33 +62,90 @@ DStar::PointVectorPointSetPair DStar::searching()
     path = this->extractPath();
     pathVisitedPair = std::make_pair(path, _closed);
 
-    _plot.plot_animation_repeated_astar("D*", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
+    _plot.plot_animation_repeated_astar("D* Lite", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
             
     // Start a thread which listens to keyboard input
-    std::thread inputThread(&DStar::checkForInput, this);
+    std::thread inputThread(&DStarLite::checkForInput, this);
 
     while (!this->stopLoop)
     {
-        cv::Point click_coordinates = _plot.get_click_coordinates("D*");
+        cv::Point click_coordinates = _plot.get_click_coordinates("D* Lite");
+        DStarLite::Point click_coordinates_pair = std::make_pair(click_coordinates.x, click_coordinates.y);
+        this->_env.update_obs(_plot._env.get_obs());
+        _obs = _env.get_obs();
+
         _repeatedCount++;
 
-        this->_env.update_obs(_plot._env.get_obs());
+        DStarLite::Point s_curr = _xI;
+        DStarLite::Point s_last = _xI;
+        int i = 0;
+        _path.clear();
+        path.clear();
+        path.push_back(_xI);
+
+        while (s_curr != _xG)
+        {
+            std::map<Point, double> h_neighbours;
+
+            DStarLite::PointVector neighbours = this->getNeighbours(s_curr);
+            for(auto s_next : neighbours)
+            {
+                // The h_neighbours values are updated based on the values in _g and cost to reach the neighbour from the current state.
+                h_neighbours[s_next] = _g[s_next] + this->cost(s_curr, s_next);
+            }
+            // Finding the state with minimum cost in _h_neighbours:
+            s_curr = std::min_element(h_neighbours.begin(), h_neighbours.end(), [](const auto& a, const auto& b) { return a.second < b.second; })->first;
+            path.push_back(s_curr);
+
+            if (i < 1)
+            {
+                _km += this->heuristic(s_last, s_curr);
+                s_last = s_curr;
+                if (std::find(_obs.begin(), _obs.end(), click_coordinates_pair) != _obs.end())
+                {
+                    _g[click_coordinates_pair] = DStarLite::INF;
+                    _rhs[click_coordinates_pair] = DStarLite::INF;
+                }
+
+                else
+                {
+                    this->updateVertex(click_coordinates_pair);
+                }
+
+                DStarLite::PointVector neighbours_click_coordinates = this->getNeighbours(click_coordinates_pair);
+                for(auto s_next : neighbours_click_coordinates)
+                {
+                    this->updateVertex(s_next);
+                }
+                
+                i++;
+
+                _count++;
+                _closed.clear();
+                this->computePath();
+                // pathVisitedPair = std::make_pair(_path, _closed);
+                // _plot.plot_animation_repeated_astar("D* Lite", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
+
+
+            }
+
+        }
 
         // // Print the updated obstacle space size.
         // std::cout << "Obstacle space size: " << this->_env.get_obs().size() << std::endl;
 
         // std::cout << "Click coordinate x: " << click_coordinates.x << std::endl;
         // std::cout << "Click coordinate y: " << click_coordinates.y << std::endl;
-
-        this->computePath();
-        path = this->extractPath();
-
         pathVisitedPair = std::make_pair(path, _closed);
         
-        _plot.plot_animation_repeated_astar("D*", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
+        _plot.plot_animation_repeated_astar("D* Lite", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
+
+
 
     }
     
+
+    _plot.plot_animation_repeated_astar("D* Lite", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, true);
     cv::waitKey(0); // Wait until a key is pressed
 
     inputThread.join(); // Make sure to join the thread
@@ -98,12 +155,12 @@ DStar::PointVectorPointSetPair DStar::searching()
 }
 
 
-void DStar::computePath()
+void DStarLite::computePath()
 {
-    DStar::PointVectorPointSetPair pathVisitedPair;
-    DStar::PointSet visited;
+    DStarLite::PointVectorPointSetPair pathVisitedPair;
+    DStarLite::PointSet visited;
 
-    std::pair<DStar::Point, std::pair<double,double>> s_with_v;
+    std::pair<DStarLite::Point, std::pair<double,double>> s_with_v;
     std::pair<double,double> k_old;
 
     while(true)
@@ -140,7 +197,7 @@ void DStar::computePath()
             // then update the g value of the state with minimum key.
             _g[s_with_v.first] = _rhs[s_with_v.first];
             // Update the g value of the state with minimum key's neighbours.
-            DStar::PointVector neighbours = this->getNeighbours(s_with_v.first);
+            DStarLite::PointVector neighbours = this->getNeighbours(s_with_v.first);
             for(auto s_next : neighbours)
             {
                 this->updateVertex(s_next);
@@ -150,8 +207,8 @@ void DStar::computePath()
         {
             // If the g value of the state with minimum key is less than or equal to the rhs value of the state with minimum key,
             // then update the g value of the state with minimum key's neighbours.
-            _g[s_with_v.first] = DStar::INF;
-            DStar::PointVector neighbours = this->getNeighbours(s_with_v.first);
+            _g[s_with_v.first] = DStarLite::INF;
+            DStarLite::PointVector neighbours = this->getNeighbours(s_with_v.first);
             for(auto s_next : neighbours)
             {
                 this->updateVertex(s_next);
@@ -164,7 +221,7 @@ void DStar::computePath()
 
 }
 
-void DStar::updateVertex(Point s)
+void DStarLite::updateVertex(Point s)
 {
     // If s is not the goal state, then compute its rhs value.
     // The rhs value of a state s is the smallest g-value of any state s' that is a successor of s plus the cost of moving from s to s'.
@@ -172,7 +229,7 @@ void DStar::updateVertex(Point s)
     // This can change due to new obstacles or changes in edge costs, causing g and rhs to become inconsistent.
     if (s != _xG)
     {
-        _rhs[s] = DStar::INF;
+        _rhs[s] = DStarLite::INF;
         PointVector neighbours = this->getNeighbours(s);
         for(auto s_next : neighbours)
         {
@@ -191,13 +248,13 @@ void DStar::updateVertex(Point s)
 
     // If the g-value and rhs-value of s are not equal, add the key of s to _U.
     // This is because the g-value of s is not consistent with the rhs-value of s.
-    // This inconsistency is integral for D* Lite, as resolving it leads to an updated shortest path.
+    // This inconsistency is integral for D* Lite Lite, as resolving it leads to an updated shortest path.
     if (_g[s] != _rhs[s]) {
         _U[s] = this->calculateKey(s);
     }
 }
 
-std::pair<double,double> DStar::calculateKey(Point s)
+std::pair<double,double> DStarLite::calculateKey(Point s)
 {
 
     std::pair<double,double> key;
@@ -215,9 +272,9 @@ std::pair<double,double> DStar::calculateKey(Point s)
     return key;
 }
 
-std::pair<DStar::Point, std::pair<double,double>> DStar::topKey()
+std::pair<DStarLite::Point, std::pair<double,double>> DStarLite::topKey()
 {
-    DStar::Point s;
+    DStarLite::Point s;
 
     // Here _U is of the form : std::map<Point, std::pair<double,double>>
     // We are finding the state with minimum key in _U.
@@ -236,9 +293,9 @@ std::pair<DStar::Point, std::pair<double,double>> DStar::topKey()
 }
 
 
-DStar::PointVector DStar::extractPath()
+DStarLite::PointVector DStarLite::extractPath()
 {
-    DStar::PointVector path;
+    DStarLite::PointVector path;
     
     Point s = _xI;
     path.push_back(s);
@@ -267,11 +324,11 @@ DStar::PointVector DStar::extractPath()
     return path;
 }
 
-double DStar::heuristic(DStar::Point &s, DStar::Point &goal)
+double DStarLite::heuristic(DStarLite::Point &s, DStarLite::Point &goal)
 {
-    // D* uses a heuristic function to estimate the cost to reach the goal from a given node.
-    // The quality of the heuristic greatly affects the efficiency of the D* search.
-    // A good heuristic function can guide the D* algorithm to explore less unnecessary paths
+    // D* Lite uses a heuristic function to estimate the cost to reach the goal from a given node.
+    // The quality of the heuristic greatly affects the efficiency of the D* Lite search.
+    // A good heuristic function can guide the D* Lite algorithm to explore less unnecessary paths
     // and find the shortest path more quickly.
 
     std::string heuristic_type = _heuristicType;
@@ -286,9 +343,9 @@ double DStar::heuristic(DStar::Point &s, DStar::Point &goal)
 }
 
 
-std::atomic<bool> DStar::stopLoop(false);
+std::atomic<bool> DStarLite::stopLoop(false);
 
-void DStar::checkForInput()
+void DStarLite::checkForInput()
 {
     // This code is used to check if a key has been pressed on the keyboard in UNIX based systems
 

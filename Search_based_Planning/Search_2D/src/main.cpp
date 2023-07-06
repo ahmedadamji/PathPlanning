@@ -9,7 +9,7 @@
 #include "ARAStar.h"
 #include "LRTAStar.h"
 #include "RTAAStar.h"
-#include "DStar.h"
+#include "DStarLite.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -89,9 +89,9 @@ int main()
     // RTAAStar::PointVectorPointSetPair pathVisitedPair = rtaastar.searching(N);
 
     // This is the D* Lite algorithm.
-    // DStar dstar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
-    DStar dstar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
-    DStar::PointVectorPointSetPair pathVisitedPair = dstar.searching();
+    // DStarLite dstarlite(env, plot, env.get_xI(), env.get_xG(), "manhattan");
+    DStarLite dstarlite(env, plot, env.get_xI(), env.get_xG(), "euclidean");
+    DStarLite::PointVectorPointSetPair pathVisitedPair = dstarlite.searching();
 
     return 0;
 }

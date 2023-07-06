@@ -28,7 +28,7 @@ set(SOURCES
     ${SOURCE_DIR}/ARAStar.cpp
     ${SOURCE_DIR}/LRTAStar.cpp
     ${SOURCE_DIR}/RTAAStar.cpp
-    ${SOURCE_DIR}/DStar.cpp
+    ${SOURCE_DIR}/DStarLite.cpp
     )
 
 # Include header files

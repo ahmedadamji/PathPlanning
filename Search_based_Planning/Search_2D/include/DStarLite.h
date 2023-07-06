@@ -1,5 +1,5 @@
-#ifndef DSTAR_H
-#define DSTAR_H
+#ifndef DSTARLITE_H
+#define DSTARLITE_H
 
 #include "Plotting.h"
 #include "Env.h"
@@ -23,7 +23,7 @@
  * @brief This is the D* Lite algorithm class
  * 
  */
-class DStar: public AStar
+class DStarLite: public AStar
 {
     public:
 
@@ -31,7 +31,7 @@ class DStar: public AStar
 
 
         /**
-         * @brief Construct a new DStar object 
+         * @brief Construct a new DStarLite object 
          * 
          * @param env 
          * @param plot 
@@ -39,12 +39,12 @@ class DStar: public AStar
          * @param xG 
          * @param heuristic_type 
          */
-        DStar(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
+        DStarLite(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type) : AStar(env, plot, xI, xG, heuristic_type) {};
 
         /**
-         * @brief Initialize the D* algorithm
+         * @brief Initialize the D* Lite algorithm
          * 
-         * This function initializes the parameters used in the D* algorithm.
+         * This function initializes the parameters used in the D* Lite algorithm.
          * 
          */
         void init();
@@ -54,15 +54,15 @@ class DStar: public AStar
          * 
          *
          * 
-         * This function runs the D* algorithm and returns the path and visited nodes.
+         * This function runs the D* Lite algorithm and returns the path and visited nodes.
          * 
-         * @param e: The weight of D* algorithm.
+         * @param e: The weight of D* Lite algorithm.
          * @return PointVectorPointSetPair: The path and visited nodes.
          */
         PointVectorPointSetPair searching();
 
         /**
-         * @brief This function computes the path for the D* algorithm.
+         * @brief This function computes the path for the D* Lite algorithm.
          * 
          */
         void computePath();
@@ -85,9 +85,9 @@ class DStar: public AStar
         /**
          * @brief This function returns the state with the smallest value in _U.
          * 
-         * @return std::pair<DStar::Point, std::pair<double,double>> The state with the smallest value in _U.
+         * @return std::pair<DStarLite::Point, std::pair<double,double>> The state with the smallest value in _U.
          */
-        std::pair<DStar::Point, std::pair<double,double>> topKey();
+        std::pair<DStarLite::Point, std::pair<double,double>> topKey();
 
         /**
          * @brief Extract the path
