@@ -174,22 +174,23 @@ void Plotting::plot_animation_bidirectional_astar(std::string windowName, std::s
 std::vector<cv::Scalar> Plotting::colorListV()
 {
     std::vector<cv::Scalar> cl_v;
-    cl_v.push_back(cv::Scalar(255, 255, 0));   // yellow
-    cl_v.push_back(cv::Scalar(0, 255, 255));   // cyan
-    cl_v.push_back(cv::Scalar(225, 105, 65));  // royalblue
-    cl_v.push_back(cv::Scalar(70, 130, 180));  // steelblue
-    cl_v.push_back(cv::Scalar(255, 165, 0));   // orange
-    cl_v.push_back(cv::Scalar(0, 255, 0));     // lime
-    cl_v.push_back(cv::Scalar(192, 192, 192)); // silver
-    cl_v.push_back(cv::Scalar(138, 43, 226));  // blueviolet
-    cl_v.push_back(cv::Scalar(34, 139, 34));   // forestgreen
-    cl_v.push_back(cv::Scalar(112, 128, 144)); // slategray
-    cl_v.push_back(cv::Scalar(0, 0, 255));     // red
-    cl_v.push_back(cv::Scalar(128, 0, 128));   // purple
-    cl_v.push_back(cv::Scalar(0, 128, 0));     // green
-    cl_v.push_back(cv::Scalar(0, 0, 139));     // darkblue
-    cl_v.push_back(cv::Scalar(128, 0, 0));     // maroon
-    cl_v.push_back(cv::Scalar(0, 128, 128));   // teal
+    cl_v.push_back(cv::Scalar(255, 255, 153));   // light yellow
+    cl_v.push_back(cv::Scalar(153, 255, 255));   // light cyan
+    cl_v.push_back(cv::Scalar(255, 184, 134));   // light royalblue
+    cl_v.push_back(cv::Scalar(147, 183, 208));   // light steelblue
+    cl_v.push_back(cv::Scalar(255, 204, 102));   // light orange
+    cl_v.push_back(cv::Scalar(153, 255, 153));   // light lime
+    cl_v.push_back(cv::Scalar(224, 224, 224));   // light silver
+    cl_v.push_back(cv::Scalar(177, 109, 236));   // light blueviolet
+    cl_v.push_back(cv::Scalar(102, 204, 102));   // light forestgreen
+    cl_v.push_back(cv::Scalar(154, 169, 179));   // light slategray
+    cl_v.push_back(cv::Scalar(102, 102, 255));   // light red
+    cl_v.push_back(cv::Scalar(179, 102, 179));   // light purple
+    cl_v.push_back(cv::Scalar(102, 179, 102));   // light green
+    cl_v.push_back(cv::Scalar(102, 102, 179));   // light darkblue
+    cl_v.push_back(cv::Scalar(179, 102, 102));   // light maroon
+    cl_v.push_back(cv::Scalar(102, 179, 179));   // light teal
+
 
     return cl_v;
 }
