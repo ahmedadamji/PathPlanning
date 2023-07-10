@@ -83,6 +83,9 @@ DStarLite::PointVectorPointSetPair DStarLite::searching()
         path.clear();
         path.push_back(_xI);
 
+        // The algorithm enters a loop, where it navigates from the current state towards the goal.
+        // It does this by considering all neighbors of the current state, and selecting the one with the lowest cost.
+
         while (s_curr != _xG)
         {
             std::map<Point, double> h_neighbours;
@@ -94,19 +97,23 @@ DStarLite::PointVectorPointSetPair DStarLite::searching()
                 h_neighbours[s_next] = _g[s_next] + this->cost(s_curr, s_next);
             }
             // Finding the state with minimum cost in _h_neighbours:
+            // The selected neighbor then becomes the current state.
             s_curr = std::min_element(h_neighbours.begin(), h_neighbours.end(), [](const auto& a, const auto& b) { return a.second < b.second; })->first;
             path.push_back(s_curr);
 
+            // We only do this once because only one obstacle is added / removed at a time.
             if (i < 1)
             {
                 _km += this->heuristic(s_last, s_curr);
                 s_last = s_curr;
+                // If an obstacle is found at the current state, we set the cost of moving to this state to infinity, effectively marking it as impassable.
                 if (std::find(_obs.begin(), _obs.end(), click_coordinates_pair) != _obs.end())
                 {
                     _g[click_coordinates_pair] = DStarLite::INF;
                     _rhs[click_coordinates_pair] = DStarLite::INF;
                 }
 
+                // Otherwise, we update the vertex as it just bebcame available to pass, and we do the same for all neighboring states.
                 else
                 {
                     this->updateVertex(click_coordinates_pair);
@@ -117,11 +124,12 @@ DStarLite::PointVectorPointSetPair DStarLite::searching()
                 {
                     this->updateVertex(s_next);
                 }
-                
+
                 i++;
 
                 _count++;
                 _closed.clear();
+                // We then recompute the _U, which is the set of states that need to be explored.
                 this->computePath();
                 // pathVisitedPair = std::make_pair(_path, _closed);
                 // _plot.plot_animation_repeated_astar("D* Lite", pathVisitedPair.second, pathVisitedPair.first, _repeatedCount, false);
@@ -157,7 +165,6 @@ DStarLite::PointVectorPointSetPair DStarLite::searching()
 
 void DStarLite::computePath()
 {
-    DStarLite::PointVectorPointSetPair pathVisitedPair;
     DStarLite::PointSet visited;
 
     std::pair<DStarLite::Point, std::pair<double,double>> s_with_v;
@@ -226,7 +233,7 @@ void DStarLite::updateVertex(Point s)
     // If s is not the goal state, then compute its rhs value.
     // The rhs value of a state s is the smallest g-value of any state s' that is a successor of s plus the cost of moving from s to s'.
     // The g-value of the goal state is 0 in this implementation.
-    // This can change due to new obstacles or changes in edge costs, causing g and rhs to become inconsistent.
+    // _rhs can change due to new obstacles or changes in edge costs, causing g and rhs to become inconsistent.
     if (s != _xG)
     {
         _rhs[s] = DStarLite::INF;
@@ -238,7 +245,7 @@ void DStarLite::updateVertex(Point s)
     }
     
     // If s is a key in _U, remove it.
-    // This is done because we want to update it only if the g value and rhs value of s are not equal.
+    // This is done because we want to store it in _U only if the g value and rhs value of s are not equal.
     // This is done in the following if condition.
     // We need to do that because if the g value and rhs value of s are equal,
     // then the g value of s is consistent with the rhs value of s.

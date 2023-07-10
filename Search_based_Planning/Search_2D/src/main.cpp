@@ -76,7 +76,7 @@ int main()
     // // and have already been added to the closed set. This is one of the optimizations that make ARA* more efficient than standard A* in certain scenarios.
     // ARAStar::PointVectorPointSetPair pathVisitedPair = arastar.searching(e);
 
-    // // Initialize and run the Real Time A* algorithm.
+    // // Initialize and run the Learning Real Time A* algorithm.
     // // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "manhattan");
     // LRTAStar lrtastar(env, plot, env.get_xI(), env.get_xG(), "euclidean");
     // int N = 250; // The number of nodes to be expanded in each iteration.

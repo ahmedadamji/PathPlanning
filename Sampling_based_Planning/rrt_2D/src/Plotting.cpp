@@ -8,8 +8,10 @@ Plotting::Plotting(Env &env, int cell_size): _env(env)
     this->xG = env.get_xG();
     this->cell_size = cell_size;
     this->obs = env.get_obs();
+    this->obs_boundary = env.get_obs_boundary();
+    this->obs_rectangle = env.get_obs_rectangle();
+    this->obs_circle = env.get_obs_circle();
     this->image = cv::Mat::zeros(env.y_range * cell_size, env.x_range * cell_size, CV_8UC3);
-
 }
 
 void Plotting::update_obs(std::set<std::pair<int, int>> new_obs)
@@ -19,19 +21,56 @@ void Plotting::update_obs(std::set<std::pair<int, int>> new_obs)
 
 void Plotting::plot_grid()
 {
-    for (auto const &obs_point : this->obs)
+
+    // The -2 is used to leave a little space between cells, forming a grid.
+    // Plotting the Boundary of the environment
+    for (auto const &obs_boundary_point : this->obs_boundary)
     {
-        // obs_point.first*cell_size and obs_point.second*cell_size are the top-left corner of the rectangle that is being drawn.
-        // This is where the rectangle begins. Multiplying by cell_size scales the coordinates to the size of the cells in the grid.
-        // (obs_point.first+1)*cell_size - 2 and (obs_point.second+1)*cell_size - 2 are the bottom-right corner of the rectangle.
-        // This is where the rectangle ends.
-        // The "+1" is used to move to the next cell, and the "-2" is used to leave a little space between cells, forming a grid.
+        // The -2 is not used here because it is a boundary so doesnt have to look like a grid.
+        // Each obs_boundary_point contains [ox, oy, width, height]
         cv::rectangle(image,
-                      cv::Point(obs_point.first * cell_size, obs_point.second * cell_size),
-                      cv::Point((obs_point.first + 1) * cell_size - 2, (obs_point.second + 1) * cell_size - 2),
+                      cv::Point(obs_boundary_point[0] * cell_size, obs_boundary_point[1] * cell_size),
+                      cv::Point((obs_boundary_point[0] + obs_boundary_point[2]) * cell_size, (obs_boundary_point[1] + obs_boundary_point[3]) * cell_size),
                       cv::Scalar(255, 255, 255),
                       -1); // Obstacle color
     }
+
+    // Plotting the Rectangles of the environment
+    for (auto const &obs_rectangle_point : this->obs_rectangle)
+    {
+        // The -2 is not used here because it is a boundary so doesnt have to look like a grid.
+        // Each obs_rectangle_point contains [ox, oy, width, height]
+        cv::rectangle(image,
+                      cv::Point(obs_rectangle_point[0] * cell_size, obs_rectangle_point[1] * cell_size),
+                      cv::Point((obs_rectangle_point[0] + obs_rectangle_point[2]) * cell_size, (obs_rectangle_point[1] + obs_rectangle_point[3]) * cell_size),
+                      cv::Scalar(256, 256, 256),
+                      3, // Thickness of the boundary
+                      cv::LINE_AA); // Anti-aliased boundary
+        cv::rectangle(image,
+                        cv::Point(obs_rectangle_point[0] * cell_size, obs_rectangle_point[1] * cell_size),
+                        cv::Point((obs_rectangle_point[0] + obs_rectangle_point[2]) * cell_size, (obs_rectangle_point[1] + obs_rectangle_point[3]) * cell_size),
+                        cv::Scalar(128, 128, 128),
+                        -1); // Obstacle color
+    }
+
+    // Plotting the Circles of the environment
+    for (auto const &obs_circle_point : this->obs_circle)
+    {
+        // The -2 is not used here because it is a boundary so doesnt have to look like a grid.
+        // Each obs_circle_point contains [ox, oy, radius]
+        cv::circle(image,
+                    cv::Point(obs_circle_point[0] * cell_size, obs_circle_point[1] * cell_size),
+                    obs_circle_point[2] * cell_size,
+                    cv::Scalar(256, 256, 256),
+                    3, // Thickness of the boundary
+                    cv::LINE_AA); // Anti-aliased boundary
+        cv::circle(image,
+                    cv::Point(obs_circle_point[0] * cell_size, obs_circle_point[1] * cell_size),
+                    obs_circle_point[2] * cell_size,
+                    cv::Scalar(128, 128, 128),
+                    -1); // Obstacle color
+    }
+
     cv::rectangle(image,
                   cv::Point(xI.first * cell_size, xI.second * cell_size),
                   cv::Point((xI.first + 1) * cell_size - 2, (xI.second + 1) * cell_size - 2),
