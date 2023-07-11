@@ -2,21 +2,22 @@
 #include <opencv2/opencv.hpp>
 #include "Plotting.h"
 
-Plotting::Plotting(Env &env, int cell_size): _env(env)
+Plotting::Plotting(Env &env, Utils &utils, int cell_size): _env(env), _utils(utils)
 {
     this->xI = env.get_xI();
     this->xG = env.get_xG();
     this->cell_size = cell_size;
-    this->obs = env.get_obs();
     this->obs_boundary = env.get_obs_boundary();
     this->obs_rectangle = env.get_obs_rectangle();
     this->obs_circle = env.get_obs_circle();
     this->image = cv::Mat::zeros(env.y_range * cell_size, env.x_range * cell_size, CV_8UC3);
 }
 
-void Plotting::update_obs(std::set<std::pair<int, int>> new_obs)
+void Plotting::update_obs()
 {
-    this->obs = new_obs;
+    this->obs_boundary = this->_env.get_obs_boundary();
+    this->obs_rectangle = this->_env.get_obs_rectangle();
+    this->obs_circle = this->_env.get_obs_circle();
 }
 
 void Plotting::plot_grid()
@@ -95,18 +96,6 @@ void Plotting::plot_visited(std::set<std::pair<int, int>> visited)
     }
 }
 
-void Plotting::plot_visited(std::set<std::pair<int, int>> visited, cv::Scalar color)
-{
-    for (auto const &visit_point : visited)
-    {
-        cv::rectangle(image,
-                      cv::Point(visit_point.first * cell_size, visit_point.second * cell_size),
-                      cv::Point((visit_point.first + 1) * cell_size - 2, (visit_point.second + 1) * cell_size - 2),
-                      color,
-                      -1); // Visited point color
-    }
-}
-
 void Plotting::plot_path(std::vector<std::pair<int, int>> path)
 {
      _path = path;
@@ -162,59 +151,6 @@ void Plotting::plot_animation(std::string windowName, std::set<std::pair<int, in
     {
         this->show_image(windowName);
         cv::waitKey(1);
-    }
-}
-
-void Plotting::plot_animation_repeated_astar(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path, int repeated_count, bool is_last)
-{
-
-    // Check if repeated_count is greater than the size of the colorListV() vector.
-    // If it is, then keep restarting from the first color.
-    if (repeated_count >= this->colorListV().size())
-    {
-        int times_repeated = repeated_count / this->colorListV().size();
-        repeated_count = repeated_count - times_repeated * this->colorListV().size();
-    }
-
-    this->plot_visited(visited, this->colorListV()[repeated_count]);
-
-    if (!path.empty())
-    {
-        this->plot_path(path, this->colorListP()[repeated_count]);
-        if (is_last)
-        {
-            this->show_image(windowName);
-            // cv::Point click_coordinates = this->get_click_coordinates(windowName);
-            cv::waitKey(0);
-        }
-        else
-        {
-            this->show_image(windowName);
-            cv::waitKey(25);
-        }
-    }
-    else
-    {
-        this->show_image(windowName);
-        cv::waitKey(2);
-    }
-}
-
-void Plotting::plot_animation_bidirectional_astar(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path, bool is_forward)
-{
-
-    this->plot_visited(visited, this->colorListV()[is_forward]);
-
-    if ((!path.empty()) && !is_forward)
-    {
-        this->plot_path(path);
-        this->show_image(windowName);
-        cv::waitKey(0);
-    }
-    else
-    {
-        this->show_image(windowName);
-        cv::waitKey(2);
     }
 }
 
@@ -335,7 +271,8 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
     
     // Check if the clicked coordinates are part of the obstacle space.
     std::pair<int, int> coordinates = std::make_pair(this->clicked_point.x, this->clicked_point.y);
-    if (this->_env.get_obs().count(coordinates) == 0)
+    Node node_coordinates(coordinates);
+    if (this->_utils.check_collision(node_coordinates))
     {
         // Check if the clicked coordinates are the start or end point.
         if ((this->clicked_point.x == this->xI.first && this->clicked_point.y == this->xI.second) ||
@@ -355,10 +292,10 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
         else {
 
             // If the clicked coordinates are not part of the obstacle space, then add them to the obstacle space.
-            this->_env.add_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
+            this->_env.add_obs_circle(std::make_pair(this->clicked_point.x, this->clicked_point.y), 1);
 
             // Add the new obstacle to the Plotting object.
-            this->update_obs(this->_env.get_obs());
+            this->update_obs();
 
             // Update the image based on the new obstacles.
             this->show_image(windowName);
@@ -375,10 +312,10 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
     else
     {
         // If the clicked coordinates are part of the obstacle space, then remove them from the obstacle space and update the image.
-        this->_env.remove_obs(std::make_pair(this->clicked_point.x, this->clicked_point.y));
+        this->_env.remove_obs_circle(std::make_pair(this->clicked_point.x, this->clicked_point.y));
 
         // Remove the obstacle from the Plotting object.
-        this->update_obs(this->_env.get_obs());
+        this->update_obs();
 
         // Erase the clicked point from the image.
         cv::rectangle(image,

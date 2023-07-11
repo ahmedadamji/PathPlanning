@@ -11,6 +11,10 @@ set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+# Include Eigen
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
@@ -19,7 +23,7 @@ set(SOURCES
     ${SOURCE_DIR}/main.cpp
     ${SOURCE_DIR}/Env.cpp
     ${SOURCE_DIR}/Plotting.cpp
-    ${SOURCE_DIR}/AStar.cpp
+    ${SOURCE_DIR}/Utils.cpp
     )
 
 # Include header files
@@ -28,5 +32,5 @@ include_directories(${INCLUDE_DIR})
 # Create an executable target for the main.cpp file
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Link the OpenCV libraries
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads)
+# Link the libraries
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads Eigen3::Eigen)
