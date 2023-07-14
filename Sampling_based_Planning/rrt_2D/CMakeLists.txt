@@ -24,6 +24,7 @@ set(SOURCES
     ${SOURCE_DIR}/Env.cpp
     ${SOURCE_DIR}/Plotting.cpp
     ${SOURCE_DIR}/Utils.cpp
+    ${SOURCE_DIR}/RRT.cpp
     )
 
 # Include header files

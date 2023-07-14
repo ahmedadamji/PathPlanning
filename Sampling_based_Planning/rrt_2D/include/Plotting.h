@@ -31,27 +31,29 @@ public:
      * 
      */
     void plot_grid();
-    /**
-     * @brief Plot the visited nodes
-     * 
-     * @param visited 
-     */
-    void plot_visited(std::set<std::pair<int, int>> visited);
 
+    /**
+     * @brief Plotting the path for rrt
+     * 
+     * @param nodelist the path
+     */
+    void plot_visited(const std::vector<Node>& nodelist);
+    
+    /**
+     * @brief Plotting the path for rrt to visualize nodes from two different vectors V1 and V2.
+     * 
+     * @param V1 The first vector of nodes
+     * @param V2 The second vector of nodes
+     */
+    void plot_visited_connect(const std::vector<Node> &V1, const std::vector<Node> &V2);
+
+    
     /**
      * @brief Plot the path
      * 
      * @param path 
      */
-    void plot_path(std::vector<std::pair<int, int>> path);
-    
-    /**
-     * @brief Plot the path with specified colors
-     * 
-     * @param path 
-     * @param color 
-     */
-    void plot_path(std::vector<std::pair<int, int>> path, cv::Scalar color);
+    void plot_path(const std::vector<std::pair<double, double>>& path);
 
     /**
      * @brief Show the image
@@ -64,10 +66,20 @@ public:
      * @brief Plot the path and visited nodes
      * 
      * @param windowName 
+     * @param nodelist 
      * @param path 
-     * @param visited 
      */
-    void plot_animation(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path);
+    void plot_animation(std::string windowName, const std::vector<Node> &nodelist, const std::vector<std::pair<double, double>> &path);
+
+    /**
+     * @brief Plot the path and visited nodes for rrt to visualize nodes from two different vectors V1 and V2.
+     * 
+     * @param windowName 
+     * @param V1 
+     * @param V2 
+     * @param path 
+     */
+    void plot_animation_connect(std::string windowName, const std::vector<Node> &V1, const std::vector<Node> &V2, const std::vector<std::pair<double, double>> &path);
 
     /**
      * @brief Get a vector of BGR colors (as cv::Scalar) based on a pre-defined list.
@@ -114,6 +126,13 @@ public:
      * 
      */
     void checkForInput();
+    
+    /**
+     * @brief Show the image
+     * 
+     * @param windowName 
+     */
+    void imageShow(std::string windowName);
 
     
     std::pair<int, int> xI, xG;
@@ -129,7 +148,7 @@ public:
     Utils _utils;
     bool firstClickDone = {};
 
-    std::vector<std::pair<int, int>> _path;
+    std::vector<std::pair<double, double>> _path;
 
 
 private:

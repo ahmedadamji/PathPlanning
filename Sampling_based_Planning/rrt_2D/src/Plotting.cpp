@@ -1,6 +1,8 @@
 // In Plotting.cpp
 #include <opencv2/opencv.hpp>
 #include "Plotting.h"
+#include "Node.h"
+#include "Utils.h"
 
 Plotting::Plotting(Env &env, Utils &utils, int cell_size): _env(env), _utils(utils)
 {
@@ -29,9 +31,10 @@ void Plotting::plot_grid()
     {
         // The -2 is not used here because it is a boundary so doesnt have to look like a grid.
         // Each obs_boundary_point contains [ox, oy, width, height]
+        // The two points are the top left and bottom right corners of the rectangle.
         cv::rectangle(image,
                       cv::Point(obs_boundary_point[0] * cell_size, obs_boundary_point[1] * cell_size),
-                      cv::Point((obs_boundary_point[0] + obs_boundary_point[2]) * cell_size, (obs_boundary_point[1] + obs_boundary_point[3]) * cell_size),
+                      cv::Point((obs_boundary_point[0] * cell_size + obs_boundary_point[2] * cell_size), (obs_boundary_point[1] * cell_size + obs_boundary_point[3] * cell_size)),
                       cv::Scalar(255, 255, 255),
                       -1); // Obstacle color
     }
@@ -43,13 +46,13 @@ void Plotting::plot_grid()
         // Each obs_rectangle_point contains [ox, oy, width, height]
         cv::rectangle(image,
                       cv::Point(obs_rectangle_point[0] * cell_size, obs_rectangle_point[1] * cell_size),
-                      cv::Point((obs_rectangle_point[0] + obs_rectangle_point[2]) * cell_size, (obs_rectangle_point[1] + obs_rectangle_point[3]) * cell_size),
+                      cv::Point((obs_rectangle_point[0] * cell_size + obs_rectangle_point[2] * cell_size), (obs_rectangle_point[1] * cell_size + obs_rectangle_point[3] * cell_size)),
                       cv::Scalar(256, 256, 256),
                       3, // Thickness of the boundary
                       cv::LINE_AA); // Anti-aliased boundary
         cv::rectangle(image,
                         cv::Point(obs_rectangle_point[0] * cell_size, obs_rectangle_point[1] * cell_size),
-                        cv::Point((obs_rectangle_point[0] + obs_rectangle_point[2]) * cell_size, (obs_rectangle_point[1] + obs_rectangle_point[3]) * cell_size),
+                        cv::Point((obs_rectangle_point[0] * cell_size + obs_rectangle_point[2] * cell_size), (obs_rectangle_point[1] * cell_size + obs_rectangle_point[3] * cell_size)),
                         cv::Scalar(128, 128, 128),
                         -1); // Obstacle color
     }
@@ -84,61 +87,103 @@ void Plotting::plot_grid()
                   -1); // End point color
 }
 
-void Plotting::plot_visited(std::set<std::pair<int, int>> visited)
+void Plotting::plot_visited(const std::vector<Node>& nodelist)
 {
-    for (auto const &visit_point : visited)
+    int count = 0;
+    for (Node node : nodelist)
     {
-        cv::rectangle(image,
-                      cv::Point(visit_point.first * cell_size, visit_point.second * cell_size),
-                      cv::Point((visit_point.first + 1) * cell_size - 2, (visit_point.second + 1) * cell_size - 2),
-                      cv::Scalar(120, 120, 120),
-                      -1); // Visited point color
+        count += 1;
+        if (node.parent)
+        {
+            cv::Point pt1(node.parent->x * cell_size, node.parent->y * cell_size);
+            cv::Point pt2(node.x * cell_size, node.y * cell_size);
+            
+            // Draw a line from parent to the node
+            cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1, 8); // Green color
+        }
     }
 }
 
-void Plotting::plot_path(std::vector<std::pair<int, int>> path)
+void Plotting::plot_visited_connect(const std::vector<Node> &V1, const std::vector<Node> &V2)
 {
-     _path = path;
-    std::reverse(path.begin(), path.end()); // Reverse the path
-    std::pair<int, int> last_point = path[0];
-    for (auto const &path_point : path)
+    int len1 = V1.size();
+    int len2 = V2.size();
+    for (int k = 0; k < std::max(len1, len2); k++)
     {
-        cv::line(image,
-                 cv::Point(last_point.first * cell_size + cell_size / 2, last_point.second * cell_size + cell_size / 2),
-                 cv::Point(path_point.first * cell_size + cell_size / 2, path_point.second * cell_size + cell_size / 2),
-                 cv::Scalar(0, 0, 255),
-                 3); // Path color
-        last_point = path_point;
+        if (k < len1)
+        {
+            if (V1[k].parent)
+            {
+                cv::Point pt1(V1[k].parent->x * cell_size, V1[k].parent->y * cell_size);
+                cv::Point pt2(V1[k].x * cell_size, V1[k].y * cell_size);
+            
+                // Draw a line from parent to the node in green color
+                cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1, 8); 
+            }
+        }
+        if (k < len2)
+        {
+            if (V2[k].parent)
+            {
+                cv::Point pt1(V2[k].parent->x * cell_size, V2[k].parent->y * cell_size);
+                cv::Point pt2(V2[k].x * cell_size, V2[k].y * cell_size);
+            
+                // Draw a line from parent to the node in green color
+                cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1, 8); 
+            }
+        }
     }
 }
 
-void Plotting::plot_path(std::vector<std::pair<int, int>> path, cv::Scalar color)
+void Plotting::plot_path(const std::vector<std::pair<double, double>>& path) 
 {
     _path = path;
-    std::reverse(path.begin(), path.end()); // Reverse the path
-    std::pair<int, int> last_point = path[0];
-    for (auto const &path_point : path)
+    if (!path.empty()) 
     {
-        cv::line(image,
-                 cv::Point(last_point.first * cell_size + cell_size / 2, last_point.second * cell_size + cell_size / 2),
-                 cv::Point(path_point.first * cell_size + cell_size / 2, path_point.second * cell_size + cell_size / 2),
-                 color,
-                 3); // Path color
-        last_point = path_point;
+        for (size_t i = 1; i < path.size(); i++) 
+        {
+            cv::Point pt1(path[i-1].first * cell_size, path[i-1].second * cell_size);
+            cv::Point pt2(path[i].first * cell_size, path[i].second * cell_size);
+
+            // Draw a line from one point to the next in red color
+            cv::line(image, pt1, pt2, cv::Scalar(0,0,255), 2); 
+        }
     }
 }
+
 
 void Plotting::show_image(std::string windowName)
 {
     this->plot_grid();
     cv::namedWindow(windowName, cv::WINDOW_NORMAL); // Create window with freedom of resizing
-    cv::imshow(windowName, image);
+    // cv::imshow(windowName, image);
+    this->imageShow(windowName);
 }
 
-void Plotting::plot_animation(std::string windowName, std::set<std::pair<int, int>> visited, std::vector<std::pair<int, int>> path)
+
+void Plotting::plot_animation(std::string windowName, const std::vector<Node> &nodelist, const std::vector<std::pair<double, double>> &path)
 {
 
-    this->plot_visited(visited);
+    this->plot_visited(nodelist);
+
+    if (!path.empty())
+    {
+        this->plot_path(path);
+        this->show_image(windowName);
+        // cv::Point click_coordinates = this->get_click_coordinates(windowName);
+        cv::waitKey(0);
+    }
+    else
+    {
+        this->show_image(windowName);
+        cv::waitKey(1);
+    }
+}
+
+void Plotting::plot_animation_connect(std::string windowName, const std::vector<Node> &V1, const std::vector<Node> &V2, const std::vector<std::pair<double, double>> &path)
+{
+
+    this->plot_visited_connect(V1, V2);
 
     if (!path.empty())
     {
@@ -234,8 +279,8 @@ void Plotting::mouse_callback(int event, int x, int y, int, void* userdata) {
 
     if (event == cv::EVENT_LBUTTONDOWN) {
         // Convert the clicked point to the corresponding cell in the grid.
-        int cell_x = x / plotting->cell_size;
-        int cell_y = y / plotting->cell_size;
+        int cell_x = x;
+        int cell_y = y;
         plotting->clicked_point = cv::Point(cell_x, cell_y);
         std::cout << "Clicked cell: (" << cell_x << ", " << cell_y << ")" << std::endl;
 
@@ -261,7 +306,8 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
     cv::setMouseCallback(windowName, &Plotting::mouse_callback, &data);
 
     while (!this->firstClickDone) {
-        cv::imshow(windowName, image);
+        // cv::imshow(windowName, image);
+        this->imageShow(windowName);
         cv::waitKey(1);
 
         if (this->stopLoop) {
@@ -319,8 +365,8 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
 
         // Erase the clicked point from the image.
         cv::rectangle(image,
-                        cv::Point(this->clicked_point.x * cell_size, this->clicked_point.y * cell_size),
-                        cv::Point((this->clicked_point.x + 1) * cell_size - 2, (this->clicked_point.y + 1) * cell_size - 2),
+                        cv::Point(this->clicked_point.x, this->clicked_point.y),
+                        cv::Point((this->clicked_point.x + 1) - 2, (this->clicked_point.y + 1) - 2),
                         cv::Scalar(0, 0, 0),
                         -1); // Obstacle color
 
@@ -364,4 +410,11 @@ void Plotting::checkForInput()
     }
 
     tcsetattr(STDIN_FILENO, TCSANOW, &oldSettings);
+}
+
+void Plotting::imageShow(std::string windowName)
+{
+    // Resize the image to fit the screen.
+    cv::resize(image, image, cv::Size(), 1, 1, cv::INTER_LINEAR);
+    cv::imshow(windowName, image);
 }
