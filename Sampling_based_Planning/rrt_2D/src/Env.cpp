@@ -10,8 +10,8 @@ Env::Env(int x_range, int y_range, std::pair<int, int> xI, std::pair<int, int> x
     this->obs_boundary = get_obs_boundary();
     this->obs_rectangle = get_obs_rectangle();
     this->obs_circle = get_obs_circle();
-    this->motions = { {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
-    // this->motions = { {1, 0}, {0, 1}, {-1, 0}, {0, -1} };
+    // this->motions = { {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
+    // // this->motions = { {1, 0}, {0, 1}, {-1, 0}, {0, -1} };
 
 }
 

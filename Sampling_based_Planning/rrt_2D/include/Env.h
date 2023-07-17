@@ -38,7 +38,7 @@ public:
 
     std::pair<int, int> xI, xG;
 
-    std::vector<std::pair<int, int>> motions;
+    // std::vector<std::pair<int, int>> motions;
 
     std::vector<std::vector<int>> obs_boundary;
     std::vector<std::vector<int>> obs_rectangle;

@@ -21,9 +21,10 @@
 class RRT {
     public:
         // Define types.
-        typedef std::pair<int, int> Point;
+        typedef std::pair<double, double> Point;
         typedef std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > PointQueue;
         typedef std::vector<Point> PointVector;
+        typedef std::vector<Node> NodeVector;
         typedef std::set<Point> PointSet;
         typedef std::unordered_set<Point> UnorderedPointSet;
         typedef std::pair<PointVector, PointVector> PointVectorPair;
@@ -40,49 +41,85 @@ class RRT {
          * @brief Construct a new RRT object 
          * 
          * @param env 
-         * @param plot 
+         * @param plot
+         * @param utils
          * @param xI 
          * @param xG 
-         * @param heuristic_type 
+         * @param step_len
+         * @param goal_sample_rate
+         * @param iter_max
          */
-        RRT(Env &env, Plotting &plot, Point xI, Point xG, std::string heuristic_type);
+        RRT(Env &env, Plotting &plot, Utils &utils, Point xI, Point xG, double step_len, double goal_sample_rate, double iter_max);
+
+        /**
+         * @brief Planning function
+         * 
+         * @return PointVector: The planned path
+         */
+        PointVector Planning();
+
+        /**
+         * @brief Generate a random node
+         * 
+         * @return Node: The random node
+         */
+        Node generate_random_node();
+
+        /**
+         * @brief Get the nearest node object to the given node from the given node list
+         * 
+         * @param node_list 
+         * @param n 
+         * @return Node 
+         */
+        Node nearest_neighbor(NodeVector node_list, Node n);
+
+        /**
+         * @brief Get a new state which is in the path from n1 to n2 bounded by step length
+         * 
+         * @param n1 
+         * @param n2 
+         * @return Node 
+         */
+        Node new_state(Node n1, Node n2);
 
         /**
          * @brief Update the obstacle set
          * 
          */
         void update_obs();
+        
+        /**
+         * @brief Exrect the path from the given end node to the start node
+         * 
+         * @param node_end 
+         * @return PointVector 
+         */
+        PointVector extract_path(Node node_end);
 
         Point _xI; // start point
+        Node _xI_node; // start node
         Point _xG; // goal point
-        Point _xC; // current point
+        Node _xG_node; // goal node
 
-        PointVector _uSet; // list of motions
+        NodeVector _vertex;
+
+        int _x_range, _y_range; // range of x and y
+
         PointVector _path; // list of nodes in the path
-
-        // These could ideally be unordered sets, to speed up lookup, but pairs are not hashable by default in C++.
-        // This does not create problems with sets because set in C++ is implemented as a binary search tree and not a hash table.
-        PointSet _closed; // list of closed nodes
         
         // Obstacle vectors.
         std::vector<std::vector<int>> obs_boundary;
         std::vector<std::vector<int>> obs_rectangle;
         std::vector<std::vector<int>> obs_circle;
 
-        std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > _open; // priority queue of open nodes
-        // std::queue<Point> _open;
-        // std::stack<Point> _open;
-        
-        std::map<Point, Point> _parent; // dict of parents of each node
-        std::map<Point, double> _g; // cost from start to current node
+        // Parameters for RRT.
+        double _step_len, _goal_sample_rate, _iter_max;
 
-        std::string _heuristicType; // type of heuristic
-
-        int _repeatedCount = 0; // count of repeated A* iterations
-
-        // added private references
+        // Instances of other classes.
         Env& _env; 
         Plotting& _plot;
+        Utils &_utils;
 
 
 

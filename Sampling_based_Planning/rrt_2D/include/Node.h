@@ -3,9 +3,10 @@
 
 class Node {
 public:
-    Node(std::pair<int, int> n) : x(n.first), y(n.second), parent(nullptr) {}
+    Node() : x(0), y(0), parent(nullptr) {}  // Default constructor
+    Node(std::pair<double, double> n) : x(n.first), y(n.second), parent(nullptr) {}
 
-    int x, y;
+    double x, y;
     Node* parent;
 };
 

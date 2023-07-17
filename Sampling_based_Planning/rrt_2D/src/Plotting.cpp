@@ -163,19 +163,17 @@ void Plotting::show_image(std::string windowName)
 
 void Plotting::plot_animation(std::string windowName, const std::vector<Node> &nodelist, const std::vector<std::pair<double, double>> &path)
 {
-
+    this->show_image(windowName);
     this->plot_visited(nodelist);
 
     if (!path.empty())
     {
         this->plot_path(path);
-        this->show_image(windowName);
         // cv::Point click_coordinates = this->get_click_coordinates(windowName);
         cv::waitKey(0);
     }
     else
     {
-        this->show_image(windowName);
         cv::waitKey(1);
     }
 }
@@ -318,7 +316,7 @@ cv::Point Plotting::get_click_coordinates(std::string windowName) {
     // Check if the clicked coordinates are part of the obstacle space.
     std::pair<int, int> coordinates = std::make_pair(this->clicked_point.x, this->clicked_point.y);
     Node node_coordinates(coordinates);
-    if (this->_utils.check_collision(node_coordinates))
+    if (this->_utils.check_collision_with_obs(node_coordinates))
     {
         // Check if the clicked coordinates are the start or end point.
         if ((this->clicked_point.x == this->xI.first && this->clicked_point.y == this->xI.second) ||

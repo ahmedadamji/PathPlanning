@@ -1,6 +1,8 @@
 #include "Plotting.h"
 #include "Env.h"
 #include "Utils.h"
+#include "Node.h"
+#include "RRT.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -29,6 +31,10 @@ int main()
     // // Show the plot.
     // plot.show_image("Sample");
     // cv::waitKey(0);
+
+    // Initialize and run the RRT algorithm.
+    RRT rrt(env, plot, utils, env.get_xI(), env.get_xG(), 0.5, 0.05, 10000);
+    RRT::PointVector path = rrt.Planning();
 
 
     return 0;
