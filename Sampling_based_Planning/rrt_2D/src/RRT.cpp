@@ -123,6 +123,9 @@ std::shared_ptr<Node> RRT::new_state(std::shared_ptr<Node>& node_start, Node& no
     double new_x = node_start->x + this->_step_len * std::cos(theta);
     double new_y = node_start->y + this->_step_len * std::sin(theta);
     std::shared_ptr<Node> new_node = std::make_shared<Node>(std::make_pair(new_x, new_y));
+    // Here I am assigning the parent of the new node as the node_start which is a shared_ptr<Node> type.
+    // This would already be in the _vertex vector, so when node_start goes out of scope, the new_node will still have a parent, as it is shared with the corresponding node in the _vertex vector.
+    // This is a great example of where shared_ptr<Node> is useful. This prevents undefined behavior when the address of the parent node is accessed after the original memory location has been freed.
     new_node->parent = node_start;
 
     return new_node;
