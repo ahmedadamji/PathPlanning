@@ -152,3 +152,7 @@ std::pair<Eigen::Vector2d, Eigen::Vector2d> Utils::get_ray(Node &start, Node &en
 double Utils::get_dist(Node &start, Node &end) {
     return std::hypot(end.x - start.x, end.y - start.y);
 }
+
+double Utils::get_angle(Node &start, Node &end) {
+    return std::atan2(end.y - start.y, end.x - start.x);
+}

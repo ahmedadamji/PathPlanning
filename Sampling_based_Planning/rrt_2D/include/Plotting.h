@@ -37,7 +37,7 @@ public:
      * 
      * @param nodelist the path
      */
-    void plot_visited(const std::vector<Node>& nodelist);
+    void plot_visited(const std::vector<std::shared_ptr<Node>>& nodelist);
     
     /**
      * @brief Plotting the path for rrt to visualize nodes from two different vectors V1 and V2.
@@ -69,7 +69,7 @@ public:
      * @param nodelist 
      * @param path 
      */
-    void plot_animation(std::string windowName, const std::vector<Node> &nodelist, const std::vector<std::pair<double, double>> &path);
+    void plot_animation(std::string windowName, const std::vector<std::shared_ptr<Node>> &nodelist, const std::vector<std::pair<double, double>> &path);
 
     /**
      * @brief Plot the path and visited nodes for rrt to visualize nodes from two different vectors V1 and V2.

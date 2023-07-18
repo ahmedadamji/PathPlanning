@@ -87,19 +87,20 @@ void Plotting::plot_grid()
                   -1); // End point color
 }
 
-void Plotting::plot_visited(const std::vector<Node>& nodelist)
+void Plotting::plot_visited(const std::vector<std::shared_ptr<Node>>& nodelist)
 {
     int count = 0;
-    for (Node node : nodelist)
+    for (std::shared_ptr<Node> node : nodelist)
     {
         count += 1;
-        if (node.parent)
+        if (node->parent != nullptr)
         {
-            cv::Point pt1(node.parent->x * cell_size, node.parent->y * cell_size);
-            cv::Point pt2(node.x * cell_size, node.y * cell_size);
+            cv::Point pt1(node->parent->x * cell_size, node->parent->y * cell_size);
+            cv::Point pt2(node->x * cell_size, node->y * cell_size);
             
             // Draw a line from parent to the node
-            cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1, 8); // Green color
+            // The 8 is the line type. 8 is 8-connected line.
+            cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1); // Green color
         }
     }
 }
@@ -112,24 +113,24 @@ void Plotting::plot_visited_connect(const std::vector<Node> &V1, const std::vect
     {
         if (k < len1)
         {
-            if (V1[k].parent)
+            if ((V1[k].parent) != nullptr)
             {
                 cv::Point pt1(V1[k].parent->x * cell_size, V1[k].parent->y * cell_size);
                 cv::Point pt2(V1[k].x * cell_size, V1[k].y * cell_size);
             
                 // Draw a line from parent to the node in green color
-                cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1, 8); 
+                cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1); 
             }
         }
         if (k < len2)
         {
-            if (V2[k].parent)
+            if ((V2[k].parent) != nullptr)
             {
                 cv::Point pt1(V2[k].parent->x * cell_size, V2[k].parent->y * cell_size);
                 cv::Point pt2(V2[k].x * cell_size, V2[k].y * cell_size);
             
                 // Draw a line from parent to the node in green color
-                cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1, 8); 
+                cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1); 
             }
         }
     }
@@ -161,19 +162,21 @@ void Plotting::show_image(std::string windowName)
 }
 
 
-void Plotting::plot_animation(std::string windowName, const std::vector<Node> &nodelist, const std::vector<std::pair<double, double>> &path)
+void Plotting::plot_animation(std::string windowName, const std::vector<std::shared_ptr<Node>> &nodelist, const std::vector<std::pair<double, double>> &path)
 {
-    this->show_image(windowName);
     this->plot_visited(nodelist);
 
     if (!path.empty())
     {
         this->plot_path(path);
+        this->show_image(windowName);
+        std::cout << "Path found!" << std::endl;
         // cv::Point click_coordinates = this->get_click_coordinates(windowName);
         cv::waitKey(0);
     }
     else
     {
+        this->show_image(windowName);
         cv::waitKey(1);
     }
 }
@@ -187,6 +190,7 @@ void Plotting::plot_animation_connect(std::string windowName, const std::vector<
     {
         this->plot_path(path);
         this->show_image(windowName);
+        std::cout << "Path found!" << std::endl;
         // cv::Point click_coordinates = this->get_click_coordinates(windowName);
         cv::waitKey(0);
     }

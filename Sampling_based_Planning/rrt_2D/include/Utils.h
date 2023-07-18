@@ -16,6 +16,7 @@ public:
     bool check_collision(Node &start, Node &end);
     std::pair<Eigen::Vector2d, Eigen::Vector2d> get_ray(Node &start, Node &end);
     double get_dist(Node &start, Node &end);
+    double get_angle(Node &start, Node &end);
 
     Env &env;
     const double delta = 0.5;

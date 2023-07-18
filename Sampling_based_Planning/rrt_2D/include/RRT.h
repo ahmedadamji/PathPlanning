@@ -17,6 +17,7 @@
 #include <utility>
 #include <algorithm>
 #include <math.h>
+#include <memory>
 
 class RRT {
     public:
@@ -24,7 +25,7 @@ class RRT {
         typedef std::pair<double, double> Point;
         typedef std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>> > PointQueue;
         typedef std::vector<Point> PointVector;
-        typedef std::vector<Node> NodeVector;
+        typedef std::vector<std::shared_ptr<Node>> NodePtrVector;
         typedef std::set<Point> PointSet;
         typedef std::unordered_set<Point> UnorderedPointSet;
         typedef std::pair<PointVector, PointVector> PointVectorPair;
@@ -72,16 +73,16 @@ class RRT {
          * @param n 
          * @return Node 
          */
-        Node nearest_neighbor(NodeVector node_list, Node n);
+        Node nearest_neighbor(NodePtrVector node_list, Node n);
 
         /**
          * @brief Get a new state which is in the path from n1 to n2 bounded by step length
          * 
          * @param n1 
          * @param n2 
-         * @return Node 
+         * @return std::shared_ptr<Node> 
          */
-        Node new_state(Node n1, Node n2);
+        std::shared_ptr<Node> new_state(std::shared_ptr<Node> &n1, Node &n2);
 
         /**
          * @brief Update the obstacle set
@@ -102,7 +103,7 @@ class RRT {
         Point _xG; // goal point
         Node _xG_node; // goal node
 
-        NodeVector _vertex;
+        NodePtrVector _vertex;
 
         int _x_range, _y_range; // range of x and y
 

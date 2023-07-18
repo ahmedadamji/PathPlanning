@@ -15,6 +15,7 @@
 #include <stack>
 #include <math.h>
 #include <random>
+#include <memory>
 
 // As a reminder, objects defined in the header with & are references, and should be initialized at the point of declaration. And once initialized, they cannot be changed to refer to another object.
 // This is why objects defined as & need to be initialized in the constructor's initialization list. Otherwise, they will be initialized with the default constructor, and then assigned a new value in the constructor's body.
@@ -30,7 +31,7 @@ RRT::RRT(Env &env, Plotting &plot, Utils &utils, Point xI, Point xG, double step
 {
     this->_xI_node = Node(xI);
     this->_xG_node = Node(xG);
-    this->_vertex.push_back(this->_xI_node);
+    this->_vertex.push_back(std::make_shared<Node>(this->_xI_node));
     this->_x_range = env.x_range;
     this->_y_range = env.y_range;
     this->obs_boundary = env.get_obs_boundary();
@@ -46,24 +47,24 @@ RRT::PointVector RRT::Planning()
     std::string windowName = "RRT";
     for (int iter = 0; iter < this->_iter_max; iter++)
     {
-        this->_plot.plot_animation(windowName, this->_vertex, _path);
-        Node node_rand = generate_random_node();
-        Node node_nearest = nearest_neighbor(this->_vertex, node_rand);
-        Node node_new = new_state(node_nearest, node_rand);
+        std::shared_ptr<Node> node_rand = std::make_shared<Node>(generate_random_node());
+        std::shared_ptr<Node> node_nearest = std::make_shared<Node>(nearest_neighbor(this->_vertex, *node_rand));
+        std::shared_ptr<Node> node_new = new_state(node_nearest, *node_rand);
 
-        if (!(this->_utils.check_collision(node_nearest, node_new)))
+        if (!(this->_utils.check_collision(*node_nearest, *node_new)))
         {
             this->_vertex.push_back(node_new);
-            double dist = this->_utils.get_dist(node_new, this->_xG_node);
+            double dist = this->_utils.get_dist(*node_new, this->_xG_node);
 
-            if ((dist <= this->_step_len) && (this->_utils.check_collision(node_new, this->_xG_node)))
+            if ((dist <= this->_step_len) && !(this->_utils.check_collision(*node_new, this->_xG_node)))
             {
-                this->new_state(node_new, this->_xG_node);
-                _path = extract_path(node_new);
+                node_new = this->new_state(node_new, this->_xG_node);
+                _path = extract_path(*node_new);
                 this->_plot.plot_animation(windowName, this->_vertex, _path);
                 return _path;
             }
         }
+        this->_plot.plot_animation(windowName, this->_vertex, _path);
     }
 
     return {};
@@ -93,36 +94,36 @@ Node RRT::generate_random_node()
         return Node(std::make_pair(randomX, randomY));
     }
 
+    // We return the goal node instead of a random node because we want to bias the tree growth towards the goal based on the goal sample rate.
     return _xG_node;
 }
 
-Node RRT::nearest_neighbor(RRT::NodeVector node_list, Node n)
+Node RRT::nearest_neighbor(RRT::NodePtrVector node_list, Node n)
 {
     double min_dist = INF;
     Node nearest_node;
 
     for (auto node : node_list)
     {
-        double dist = this->_utils.get_dist(node, n);
+        double dist = this->_utils.get_dist(*node, n);
         if (dist < min_dist)
         {
             min_dist = dist;
-            nearest_node = node;
+            nearest_node = *node;
         }
     }
 
     return nearest_node;
 }
 
-Node RRT::new_state(Node n1, Node n2)
+std::shared_ptr<Node> RRT::new_state(std::shared_ptr<Node>& node_start, Node& node_end)
 {
-    double dist = std::min(this->_utils.get_dist(n1, n2), this->_step_len);
-    double theta = std::atan2(n2.y - n1.y, n2.x - n1.x);
-    double new_x = n1.x + this->_step_len * std::cos(theta);
-    double new_y = n1.y + this->_step_len * std::sin(theta);
-    Node new_node(std::make_pair(new_x, new_y));
-    // n1 needs to be a reference as parent is a pointer.
-    new_node.parent = &n1;
+    double dist = std::min(this->_utils.get_dist(*node_start, node_end), this->_step_len);
+    double theta = this->_utils.get_angle(*node_start, node_end);
+    double new_x = node_start->x + this->_step_len * std::cos(theta);
+    double new_y = node_start->y + this->_step_len * std::sin(theta);
+    std::shared_ptr<Node> new_node = std::make_shared<Node>(std::make_pair(new_x, new_y));
+    new_node->parent = node_start;
 
     return new_node;
 }
@@ -135,8 +136,8 @@ RRT::PointVector RRT::extract_path(Node node_end)
 
     while (node_curr.parent != nullptr)
     {
-        path.push_back(std::make_pair(node_curr.x, node_curr.y));
         node_curr = *node_curr.parent;
+        path.push_back(std::make_pair(node_curr.x, node_curr.y));
     }
 
     return path;
