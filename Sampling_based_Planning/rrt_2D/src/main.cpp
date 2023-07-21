@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "Node.h"
 #include "RRT.h"
+#include "RRT_Connect.h"
 #include <opencv2/opencv.hpp>
 
 int main()
@@ -32,9 +33,21 @@ int main()
     // plot.show_image("Sample");
     // cv::waitKey(0);
 
+    // // Initialize and run the RRT algorithm.
+    // double step_len, goal_sample_rate, iter_max;
+    // step_len = 0.5;
+    // goal_sample_rate = 0.05;
+    // iter_max = 10000;
+    // RRT rrt(env, plot, utils, env.get_xI(), env.get_xG(), step_len, goal_sample_rate, iter_max);
+    // RRT::PointVector path = rrt.Planning();
+
     // Initialize and run the RRT algorithm.
-    RRT rrt(env, plot, utils, env.get_xI(), env.get_xG(), 0.5, 0.05, 10000);
-    RRT::PointVector path = rrt.Planning();
+    double step_len, goal_sample_rate, iter_max;
+    step_len = 0.8;
+    goal_sample_rate = 0.05;
+    iter_max = 5000;
+    RRT_Connect rrt_connect(env, plot, utils, env.get_xI(), env.get_xG(), step_len, goal_sample_rate, iter_max);
+    RRT_Connect::PointVector path = rrt_connect.Planning();
 
 
     return 0;

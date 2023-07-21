@@ -25,6 +25,7 @@ set(SOURCES
     ${SOURCE_DIR}/Plotting.cpp
     ${SOURCE_DIR}/Utils.cpp
     ${SOURCE_DIR}/RRT.cpp
+    ${SOURCE_DIR}/RRT_Connect.cpp
     )
 
 # Include header files

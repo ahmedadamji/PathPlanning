@@ -45,7 +45,7 @@ public:
      * @param V1 The first vector of nodes
      * @param V2 The second vector of nodes
      */
-    void plot_visited_connect(const std::vector<Node> &V1, const std::vector<Node> &V2);
+    void plot_visited_connect(const std::vector<std::shared_ptr<Node>> &V1, const std::vector<std::shared_ptr<Node>> &V2);
 
     
     /**
@@ -79,7 +79,7 @@ public:
      * @param V2 
      * @param path 
      */
-    void plot_animation_connect(std::string windowName, const std::vector<Node> &V1, const std::vector<Node> &V2, const std::vector<std::pair<double, double>> &path);
+    void plot_animation_connect(std::string windowName, const std::vector<std::shared_ptr<Node>> &V1, const std::vector<std::shared_ptr<Node>> &V2, const std::vector<std::pair<double, double>> &path);
 
     /**
      * @brief Get a vector of BGR colors (as cv::Scalar) based on a pre-defined list.

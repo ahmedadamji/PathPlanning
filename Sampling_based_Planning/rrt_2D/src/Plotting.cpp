@@ -105,7 +105,7 @@ void Plotting::plot_visited(const std::vector<std::shared_ptr<Node>>& nodelist)
     }
 }
 
-void Plotting::plot_visited_connect(const std::vector<Node> &V1, const std::vector<Node> &V2)
+void Plotting::plot_visited_connect(const std::vector<std::shared_ptr<Node>> &V1, const std::vector<std::shared_ptr<Node>> &V2)
 {
     int len1 = V1.size();
     int len2 = V2.size();
@@ -113,10 +113,10 @@ void Plotting::plot_visited_connect(const std::vector<Node> &V1, const std::vect
     {
         if (k < len1)
         {
-            if ((V1[k].parent) != nullptr)
+            if ((V1[k]->parent) != nullptr)
             {
-                cv::Point pt1(V1[k].parent->x * cell_size, V1[k].parent->y * cell_size);
-                cv::Point pt2(V1[k].x * cell_size, V1[k].y * cell_size);
+                cv::Point pt1(V1[k]->parent->x * cell_size, V1[k]->parent->y * cell_size);
+                cv::Point pt2(V1[k]->x * cell_size, V1[k]->y * cell_size);
             
                 // Draw a line from parent to the node in green color
                 cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1); 
@@ -124,10 +124,10 @@ void Plotting::plot_visited_connect(const std::vector<Node> &V1, const std::vect
         }
         if (k < len2)
         {
-            if ((V2[k].parent) != nullptr)
+            if ((V2[k]->parent) != nullptr)
             {
-                cv::Point pt1(V2[k].parent->x * cell_size, V2[k].parent->y * cell_size);
-                cv::Point pt2(V2[k].x * cell_size, V2[k].y * cell_size);
+                cv::Point pt1(V2[k]->parent->x * cell_size, V2[k]->parent->y * cell_size);
+                cv::Point pt2(V2[k]->x * cell_size, V2[k]->y * cell_size);
             
                 // Draw a line from parent to the node in green color
                 cv::line(image, pt1, pt2, cv::Scalar(0,255,0), 1); 
@@ -181,7 +181,7 @@ void Plotting::plot_animation(std::string windowName, const std::vector<std::sha
     }
 }
 
-void Plotting::plot_animation_connect(std::string windowName, const std::vector<Node> &V1, const std::vector<Node> &V2, const std::vector<std::pair<double, double>> &path)
+void Plotting::plot_animation_connect(std::string windowName, const std::vector<std::shared_ptr<Node>> &V1, const std::vector<std::shared_ptr<Node>> &V2, const std::vector<std::pair<double, double>> &path)
 {
 
     this->plot_visited_connect(V1, V2);
