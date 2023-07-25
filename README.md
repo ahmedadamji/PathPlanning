@@ -116,8 +116,17 @@ Please make sure you have installed the required dependencies before compiling a
 <div align=right>
 <table>
   <tr>
-    https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/rrt.gif
-    https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/goal_biased_rrt.gif
+
+    <div align="center">
+    
+    #### RRT 2D
+    ![RRT 2D](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/rrt.gif)
+    
+    #### Goal Biased RRT
+    ![Goal Biased RRT](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/goal_biased_rrt.gif)
+    
+    </div>
+
   </tr>
 </table>
 <table>
