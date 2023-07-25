@@ -113,43 +113,17 @@ Please make sure you have installed the required dependencies before compiling a
 
 ## Animations - Sampling-Based
 ### RRT & Variants
-<div align=right>
-<table>
-  <tr>
 
-    <div align="center">
-    
-    #### RRT 2D
-    ![RRT 2D](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/rrt.gif)
-    
-    #### Goal Biased RRT
-    ![Goal Biased RRT](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/goal_biased_rrt.gif)
-    
-    </div>
+<div align="center">
 
-  </tr>
-</table>
-<table>
-  <tr>
+#### RRT 2D
+![RRT 2D](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/rrt.gif)
 
-  </tr>
-</table>
-<table>
-  <tr>
+#### Goal Biased RRT
+![Goal Biased RRT](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/goal_biased_rrt.gif)
 
-  </tr>
-</table>
-<table>
-  <tr>
-
-  </tr>
-</table>
-<table>
-  <tr>
-
-  </tr>
-</table>
 </div>
+
 
 
 ---
