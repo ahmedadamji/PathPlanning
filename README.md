@@ -72,44 +72,43 @@ Please make sure you have installed the required dependencies before compiling a
 
 
 ---
-## Animations - Search-Based
-### Best-First & Dijkstra
-<div align=right>
-<table>
-  <tr>
 
-  </tr>
-</table>
+## Animations - Search Based Planning
+
+<div align="center">
+
+#### BFS
+![BFS](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/bfs.gif)
+
+#### DFS
+![DFS](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/dfs.gif)
+
+#### Dijkstra
+![Dijkstra](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/dijkstra.gif)
+
+#### Best-First Search
+![Best-First](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/bestfirst.gif)
+
+#### A* Search
+![A*](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/astar.gif)
+
+#### Repeated A* Search
+![Repeated A*](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/repeated_astar.gif)
+
+#### Bidirectional A* Search
+![Bidirectional A*](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/bidirectional_astar.gif)
+
+#### ARA* Search
+![ARA*](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/arastar.gif)
+
+#### LRTA* Search
+![LRTA*](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/lrtastar.gif)
+
+#### RTAA* Search
+![RTAA*](https://github.com/ahmedadamji/PathPlanning/blob/main/Search_based_Planning/Search_2D/gifs/rtaastar.gif)
+
 </div>
 
-### A* and A* Variants
-<div align=right>
-<table>
-  <tr>
-
-  </tr>
-</table>
-<table>
-  <tr>
-
-  </tr>
-</table>
-<table>
-  <tr>
-
-  </tr>
-</table>
-<table>
-  <tr>
-
-  </tr>
-</table>
-<table>
-  <tr>
-
-  </tr>
-</table>
-</div>
 
 ## Animations - Sampling-Based
 ### RRT & Variants
