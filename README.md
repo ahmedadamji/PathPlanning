@@ -10,24 +10,24 @@ The related papers are listed in ZHM-REAL's original Python repository [Papers](
 ## Compilation and Build
 Clone the repository:
 
-'''
+```
 git clone https://github.com/ahmedadamji/PathPlanning.git
 cd PathPlanning
-'''
+```
 
 Make sure you have CMake installed. If not, install it from https://cmake.org/download/.
 
 Create a build directory and navigate into it:
 
-'''
+```
 mkdir build
 cd build
-'''
+```
 Run CMake to configure the build:
 
-'''
+```
 cmake ..
-'''
+```
 Build the project:
 
 ------
@@ -39,9 +39,9 @@ Open the terminal and navigate to the build directory.
 
 Run the executable for the search_2D program:
 
-'''
+```
 ./PathPlanning
-'''
+```
 The program will visualize the path planning algorithms on a 2D grid environment.
 
 ### RRT_2D
@@ -51,9 +51,9 @@ Open the terminal and navigate to the build directory.
 
 Run the executable for the rrt_2D program:
 
-'''
+```
 ./SamplingBasedPlanning2D
-'''
+```
 The program will visualize the RRT-Connect algorithm on a 2D grid environment.
 
 
@@ -107,7 +107,7 @@ Please make sure you have installed the required dependencies before compiling a
 </table>
 </div>
 
-## Animation - Sampling-Based
+## Animations - Sampling-Based
 ### RRT & Variants
 <div align=right>
 <table>
