@@ -122,6 +122,9 @@ Please make sure you have installed the required dependencies before compiling a
 #### Goal Biased RRT
 ![Goal Biased RRT](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/goal_biased_rrt.gif)
 
+#### RRT Connect
+![RRT Connect](https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/rrt_connect.gif)
+
 </div>
 
 
