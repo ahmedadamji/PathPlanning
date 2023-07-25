@@ -48,6 +48,8 @@ int main()
     iter_max = 5000;
     RRT_Connect rrt_connect(env, plot, utils, env.get_xI(), env.get_xG(), step_len, goal_sample_rate, iter_max);
     RRT_Connect::PointVector path = rrt_connect.Planning();
+    // Save the recorded frames as a GIF with a delay of 1 milliseconds between frames.
+    plot.save_as_gif("rrt_connect.gif", 1);
 
 
     return 0;

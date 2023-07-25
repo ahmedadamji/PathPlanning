@@ -8,6 +8,8 @@
 #include <atomic>
 #include <termios.h>
 #include <unistd.h>
+#include <Magick++.h>
+
 #include "Env.h"
 #include "Utils.h"
 #include "Node.h"
@@ -134,6 +136,22 @@ public:
      */
     void imageShow(std::string windowName);
 
+    /**
+     * @brief Save the recorded frames as a video
+     * 
+     * @param filename 
+     * @param fps 
+     */
+    void save_frame(const std::string& filename);
+    
+    /**
+     * @brief Save the recorded frames as a gif
+     * 
+     * @param filename 
+     * @param delay_between_frames 
+     */
+    void save_as_gif(const std::string& filename, int delay_between_frames);
+
     
     std::pair<int, int> xI, xG;
     std::set<std::pair<int, int>> obs;
@@ -141,7 +159,8 @@ public:
     std::vector<std::vector<int>> obs_rectangle;
     std::vector<std::vector<int>> obs_circle;
     int cell_size;  // Size of each cell in pixels.
-    cv::Mat image;
+    cv::Mat image; // The image to be plotted.
+    std::vector<cv::Mat> frames; // to store the frames for saving as a video
 
     cv::Point clicked_point; // to store clicked pixel's coordinates
     Env _env;

@@ -1,5 +1,7 @@
 // In Plotting.cpp
 #include <opencv2/opencv.hpp>
+#include <Magick++.h>
+
 #include "Plotting.h"
 #include "Node.h"
 #include "Utils.h"
@@ -419,4 +421,36 @@ void Plotting::imageShow(std::string windowName)
     // Resize the image to fit the screen.
     cv::resize(image, image, cv::Size(), 1, 1, cv::INTER_LINEAR);
     cv::imshow(windowName, image);
+    
+    // Save the frame to the frames vector
+    frames.push_back(image.clone());
+}
+
+
+void Plotting::save_frame(const std::string& filename) {
+    // Resize the image to fit the screen (optional)
+    cv::Mat resized_image;
+    cv::resize(image, resized_image, cv::Size(), 1, 1, cv::INTER_LINEAR);
+
+    // Save the frame to the specified filename
+    cv::imwrite(filename, resized_image);
+}
+
+void Plotting::save_as_gif(const std::string& filename, int delay_between_frames) {
+    // Initialize ImageMagick
+    Magick::InitializeMagick(nullptr);
+
+    // Convert OpenCV frames to Magick++ images
+    std::vector<Magick::Image> magick_frames;
+    for (const auto& frame : frames) {
+        cv::Mat rgb_frame;
+        cv::cvtColor(frame, rgb_frame, cv::COLOR_BGR2RGB);
+
+        Magick::Image magick_image(rgb_frame.cols, rgb_frame.rows, "RGB", Magick::CharPixel, rgb_frame.data);
+        magick_image.animationDelay(delay_between_frames / 10);
+        magick_frames.push_back(magick_image);
+    }
+
+    // Write frames to a GIF file
+    Magick::writeImages(magick_frames.begin(), magick_frames.end(), filename);
 }

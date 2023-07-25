@@ -15,6 +15,11 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
+# Include ImageMagick
+find_package(ImageMagick COMPONENTS Magick++ MagickCore)
+include_directories(${ImageMagick_INCLUDE_DIRS})
+
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
@@ -35,4 +40,4 @@ include_directories(${INCLUDE_DIR})
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link the libraries
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads Eigen3::Eigen)
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} Threads::Threads Eigen3::Eigen ${ImageMagick_LIBRARIES})
