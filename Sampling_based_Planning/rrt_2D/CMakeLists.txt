@@ -19,7 +19,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 find_package(ImageMagick COMPONENTS Magick++ MagickCore)
 include_directories(${ImageMagick_INCLUDE_DIRS})
 
-
+# Include Threads
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 

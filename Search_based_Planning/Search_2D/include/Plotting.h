@@ -8,6 +8,8 @@
 #include <atomic>
 #include <termios.h>
 #include <unistd.h>
+#include <Magick++.h>
+
 #include "Env.h"
 
 class Plotting {
@@ -140,18 +142,35 @@ public:
      * 
      */
     void checkForInput();
+    
+    /**
+     * @brief Show the image
+     * 
+     * @param windowName 
+     */
+    void imageShow(std::string windowName);
+    
+    /**
+     * @brief Save the recorded frames as a gif
+     * 
+     * @param filename 
+     */
+    void save_as_gif(const std::string& filename);
 
     
     std::pair<int, int> xI, xG;
     std::set<std::pair<int, int>> obs;
     int cell_size;  // Size of each cell in pixels.
-    cv::Mat image;
+    cv::Mat image; // The image to be plotted.
+    std::vector<cv::Mat> frames; // to store the frames for saving as a video
 
     cv::Point clicked_point; // to store clicked pixel's coordinates
     Env _env;
     bool firstClickDone = {};
 
     std::vector<std::pair<int, int>> _path;
+
+    std::string _windowName;
 
 
 private:
