@@ -426,31 +426,70 @@ void Plotting::imageShow(std::string windowName)
     frames.push_back(image.clone());
 }
 
-
-void Plotting::save_frame(const std::string& filename) {
-    // Resize the image to fit the screen (optional)
-    cv::Mat resized_image;
-    cv::resize(image, resized_image, cv::Size(), 1, 1, cv::INTER_LINEAR);
-
-    // Save the frame to the specified filename
-    cv::imwrite(filename, resized_image);
-}
-
-void Plotting::save_as_gif(const std::string& filename, int delay_between_frames) {
+void Plotting::save_as_gif(const std::string& filename) {
     // Initialize ImageMagick
     Magick::InitializeMagick(nullptr);
 
     // Convert OpenCV frames to Magick++ images
     std::vector<Magick::Image> magick_frames;
-    for (const auto& frame : frames) {
-        cv::Mat rgb_frame;
-        cv::cvtColor(frame, rgb_frame, cv::COLOR_BGR2RGB);
+    int frame_count = 0;
 
-        Magick::Image magick_image(rgb_frame.cols, rgb_frame.rows, "RGB", Magick::CharPixel, rgb_frame.data);
-        magick_image.animationDelay(delay_between_frames / 10);
-        magick_frames.push_back(magick_image);
+    if(frames.empty()) {
+        std::cout << "No frames to process." << std::endl;
+        return;
+    }
+
+    for (const auto& frame : frames) {
+        frame_count++;
+        // if (!(frame_count % 20 == 0)) {
+        //     continue;
+        // }
+        // Only process every 20th frame but keep the first and last frame
+        if (!(frame_count == 1 || frame_count == frames.size() || frame_count % 20 == 0)) {
+            continue;
+        }
+        
+        // Check if frame is empty
+        if(frame.empty()){
+            std::cout << "Skipping an empty frame." << std::endl;
+            continue;
+        }
+
+        try {
+            cv::Mat rgb_frame;
+            cv::cvtColor(frame, rgb_frame, cv::COLOR_BGR2RGB);
+
+            // Check the state of rgb_frame
+            if(rgb_frame.data == nullptr) {
+                std::cout << "rgb_frame data is null. Skipping frame." << std::endl;
+                continue;
+            }
+
+            // // Display rgb_frame size
+            // std::cout << "rgb_frame size: " << rgb_frame.size() << std::endl;
+
+            Magick::Image magick_image(rgb_frame.cols, rgb_frame.rows, "RGB", Magick::CharPixel, rgb_frame.data);
+            magick_frames.push_back(magick_image);
+        }
+        catch (std::exception& error) {
+            std::cout << "Error while converting frame to Magick++ image: " << error.what() << std::endl;
+            continue;
+        }
+    }
+
+    if(magick_frames.empty()){
+        std::cout << "No frames to save. Exiting." << std::endl;
+        return;
     }
 
     // Write frames to a GIF file
-    Magick::writeImages(magick_frames.begin(), magick_frames.end(), filename);
+    try {
+        Magick::writeImages(magick_frames.begin(), magick_frames.end(), filename);
+    }
+    catch(std::exception& error){
+        std::cout << "Error while writing frames to gif: " << error.what() << std::endl;
+    }
 }
+
+
+

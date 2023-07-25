@@ -135,22 +135,13 @@ public:
      * @param windowName 
      */
     void imageShow(std::string windowName);
-
-    /**
-     * @brief Save the recorded frames as a video
-     * 
-     * @param filename 
-     * @param fps 
-     */
-    void save_frame(const std::string& filename);
     
     /**
      * @brief Save the recorded frames as a gif
      * 
      * @param filename 
-     * @param delay_between_frames 
      */
-    void save_as_gif(const std::string& filename, int delay_between_frames);
+    void save_as_gif(const std::string& filename);
 
     
     std::pair<int, int> xI, xG;

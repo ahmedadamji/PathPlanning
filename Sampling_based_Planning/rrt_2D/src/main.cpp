@@ -37,9 +37,13 @@ int main()
     // double step_len, goal_sample_rate, iter_max;
     // step_len = 0.5;
     // goal_sample_rate = 0.05;
+    // // goal_sample_rate = 0;
     // iter_max = 10000;
     // RRT rrt(env, plot, utils, env.get_xI(), env.get_xG(), step_len, goal_sample_rate, iter_max);
     // RRT::PointVector path = rrt.Planning();
+    // // plot.save_as_gif("../gifs/rrt.gif");
+    // plot.save_as_gif("../gifs/goal_biased_rrt.gif");
+
 
     // Initialize and run the RRT algorithm.
     double step_len, goal_sample_rate, iter_max;
@@ -48,8 +52,7 @@ int main()
     iter_max = 5000;
     RRT_Connect rrt_connect(env, plot, utils, env.get_xI(), env.get_xG(), step_len, goal_sample_rate, iter_max);
     RRT_Connect::PointVector path = rrt_connect.Planning();
-    // Save the recorded frames as a GIF with a delay of 1 milliseconds between frames.
-    plot.save_as_gif("rrt_connect.gif", 1);
+    plot.save_as_gif("../gifs/rrt_connect.gif");
 
 
     return 0;
