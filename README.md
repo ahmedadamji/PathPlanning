@@ -116,7 +116,8 @@ Please make sure you have installed the required dependencies before compiling a
 <div align=right>
 <table>
   <tr>
-
+    https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/rrt.gif
+    https://github.com/ahmedadamji/PathPlanning/blob/main/Sampling_based_Planning/rrt_2D/gifs/goal_biased_rrt.gif
   </tr>
 </table>
 <table>
