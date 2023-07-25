@@ -111,7 +111,6 @@ Please make sure you have installed the required dependencies before compiling a
 
 
 ## Animations - Sampling-Based
-### RRT & Variants
 
 <div align="center">
 
