@@ -131,4 +131,4 @@ Please make sure you have installed the required dependencies before compiling a
 
 ---
 ## Acknowledgments
-Thanks to [Huiming Zhou](https://github.com/zhm-real). for providing the original Python implementation and related papers for the path planning algorithms.
+Thanks to [Huiming Zhou](https://github.com/zhm-real) for providing the original Python implementation and related papers for the path planning algorithms.
