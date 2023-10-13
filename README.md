@@ -63,15 +63,17 @@ Note: In each main file, you can comment/uncomment the specific algorithm instan
 
 
 ---
+
 ## Dependencies
 The following dependencies are required to build and run the programs:
 
-OpenCV 2.4 or later: Install OpenCV from https://opencv.org/releases/ or use your package manager.
+- **OpenCV 2.4 or later**: Install OpenCV from https://opencv.org/releases/ or use your package manager.
+- **ImageMagick++ (Magick++)**: Install ImageMagick++ from the official ImageMagick website or use your package manager. On many systems, installing `libmagick++-dev` (for Debian/Ubuntu) using `sudo apt-get install libmagick++-dev` or `ImageMagick-c++-devel` (for Red Hat/Fedora) using `sudo dnf install ImageMagick-c++-devel` should suffice.
+
 Please make sure you have installed the required dependencies before compiling and running the programs.
 
-
-
 ---
+
 
 ## Animations - Search Based Planning
 
